@@ -8,7 +8,7 @@ class BusType(models.Model):
 	name = models.ForeignKey(DeviceType)
 
 class MeasureType(models.Model):
-	type = models.CharField(max_length=20)
+	name = models.CharField(max_length=20)
 
 class Bus(models.Model):
 	name = models.CharField(max_length=20)
@@ -22,7 +22,8 @@ class Sequence(models.Model):
 class Device(models.Model):
 	name = models.CharField(max_length=20)
 	place = models.CharField(max_length=50)
-	bus = models.ManyToManyField(DeviceType, blank=True)
+	type = models.ManyToManyField(DeviceType)
+	bus = models.ForeignKey(Bus, blank=True)
 	sequence = models.ManyToManyField(Sequence, blank=True)
 
 class Measure(models.Model):
