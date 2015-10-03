@@ -2,4 +2,5 @@
 *.pyc
 *.db
 *.sqlite*
-/staticfiles/
+*/staticfiles/
+*/migrations/
