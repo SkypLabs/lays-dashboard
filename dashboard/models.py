@@ -14,20 +14,20 @@ class Bus(models.Model):
 	name = models.CharField(max_length=20)
 	type = models.ForeignKey(BusType)
 
-class Sequence(models.Model):
-	name = models.CharField(max_length=20)
-	description = models.CharField(max_length=200, blank=True)
-	payload = models.CharField(max_length=100)
-
 class Device(models.Model):
 	name = models.CharField(max_length=20)
 	place = models.CharField(max_length=50)
 	type = models.ManyToManyField(DeviceType)
 	bus = models.ForeignKey(Bus, blank=True)
-	sequence = models.ManyToManyField(Sequence, blank=True)
 
 class Measure(models.Model):
 	type = models.ForeignKey(MeasureType)
 	device = models.ForeignKey(Device)
 	value = models.FloatField()
 	time = models.DateTimeField(default=now)
+
+class Sequence(models.Model):
+	name = models.CharField(max_length=20)
+	description = models.CharField(max_length=200, blank=True)
+	payload = models.CharField(max_length=100)
+	device = models.ManyToManyField(Device, blank=True)
