@@ -14,6 +14,9 @@ class Bus(models.Model):
 	name = models.CharField(max_length=20)
 	type = models.ForeignKey(BusType)
 
+	class Meta:
+		verbose_name_plural = "Buses"
+
 class Device(models.Model):
 	name = models.CharField(max_length=20)
 	place = models.CharField(max_length=50)
