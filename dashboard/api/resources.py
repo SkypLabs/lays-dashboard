@@ -21,7 +21,7 @@ class DeviceTypeResource(ModelResource):
 		}
 
 class BusTypeResource(ModelResource):
-	name = fields.ForeignKey(DeviceTypeResource, 'name', full=True)
+	name = fields.ToOneField(DeviceTypeResource, 'name', full=True)
 
 	class Meta:
 		queryset = BusType.objects.all()
@@ -53,7 +53,7 @@ class MeasureTypeResource(ModelResource):
 		}
 
 class BusResource(ModelResource):
-	type = fields.ForeignKey(BusTypeResource, 'type', full=True)
+	type = fields.ToOneField(BusTypeResource, 'type', full=True)
 
 	class Meta:
 		queryset = Bus.objects.all()
@@ -88,7 +88,7 @@ class SequenceResource(ModelResource):
 		}
 
 class DeviceResource(ModelResource):
-	bus = fields.ForeignKey(BusResource, 'bus', full=True)
+	bus = fields.ToOneField(BusResource, 'bus', full=True)
 	type = fields.ToManyField('dashboard.api.resources.DeviceTypeResource', 'type', full=True)
 
 	class Meta:
@@ -107,8 +107,8 @@ class DeviceResource(ModelResource):
 		}
 
 class MeasureResource(ModelResource):
-	type = fields.ForeignKey(MeasureTypeResource, 'type', full=True)
-	device = fields.ForeignKey(DeviceResource, 'device', full=True)
+	type = fields.ToOneField(MeasureTypeResource, 'type', full=True)
+	device = fields.ToOneField(DeviceResource, 'device', full=True)
 
 	class Meta:
 		queryset = Measure.objects.all()
