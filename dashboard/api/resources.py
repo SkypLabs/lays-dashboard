@@ -55,7 +55,7 @@ class BusResource(ModelResource):
 
 	class Meta:
 		queryset = Bus.objects.all()
-		resource_name = 'bus_type'
+		resource_name = 'bus'
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
@@ -71,7 +71,7 @@ class BusResource(ModelResource):
 class SequenceResource(ModelResource):
 	class Meta:
 		queryset = Sequence.objects.all()
-		resource_name = 'sequence_type'
+		resource_name = 'sequence'
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
@@ -88,7 +88,7 @@ class DeviceResource(ModelResource):
 
 	class Meta:
 		queryset = Device.objects.all()
-		resource_name = 'device_type'
+		resource_name = 'device'
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
