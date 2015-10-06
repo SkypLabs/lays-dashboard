@@ -21,6 +21,8 @@ class DeviceTypeResource(ModelResource):
 		}
 
 class BusTypeResource(ModelResource):
+	name = fields.ForeignKey(DeviceTypeResource, 'name', full=True)
+
 	class Meta:
 		queryset = BusType.objects.all()
 		resource_name = 'bus_type'
