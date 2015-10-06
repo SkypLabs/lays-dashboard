@@ -1,5 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 from tastypie.utils.timezone import now
+from tastypie.models import create_api_key
+
+models.signals.post_save.connect(create_api_key, sender=User)
 
 class DeviceType(models.Model):
 	name = models.CharField(max_length=20)
