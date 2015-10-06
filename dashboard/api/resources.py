@@ -1,6 +1,6 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
 from dashboard.models import DeviceType, BusType, MeasureType, Bus, Sequence, Device, Measure
 from tastypie.serializers import Serializer
@@ -12,7 +12,7 @@ class DeviceTypeResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -27,7 +27,7 @@ class BusTypeResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -42,7 +42,7 @@ class MeasureTypeResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -59,7 +59,7 @@ class BusResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -75,7 +75,7 @@ class SequenceResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -92,7 +92,7 @@ class DeviceResource(ModelResource):
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
@@ -111,7 +111,7 @@ class MeasureResource(ModelResource):
 		excludes = ['id']
 		ordering = ['time']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
-		authentication = ApiKeyAuthentication()
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
 		include_resource_uri = False
