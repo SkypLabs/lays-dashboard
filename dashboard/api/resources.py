@@ -71,6 +71,8 @@ class BusResource(ModelResource):
 		}
 
 class SequenceResource(ModelResource):
+	device = fields.ToManyField('dashboard.api.resources.DeviceResource', 'device', full=True)
+
 	class Meta:
 		queryset = Sequence.objects.all()
 		resource_name = 'sequence'
@@ -87,6 +89,7 @@ class SequenceResource(ModelResource):
 
 class DeviceResource(ModelResource):
 	bus = fields.ForeignKey(BusResource, 'bus', full=True)
+	type = fields.ToManyField('dashboard.api.resources.DeviceTypeResource', 'type', full=True)
 
 	class Meta:
 		queryset = Device.objects.all()
