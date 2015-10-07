@@ -2,13 +2,13 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
-from dashboard.models import DeviceType, BusType, MeasureType, Bus, Sequence, Device, Measure
+from dashboard.models import CommunicationType, BusType, MeasureType, Bus, Sequence, Device, Measure
 from tastypie.serializers import Serializer
 
-class DeviceTypeResource(ModelResource):
+class CommunicationTypeResource(ModelResource):
 	class Meta:
-		queryset = DeviceType.objects.all()
-		resource_name = 'device_type'
+		queryset = CommunicationType.objects.all()
+		resource_name = 'communication_type'
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'patch', 'delete']
@@ -21,7 +21,7 @@ class DeviceTypeResource(ModelResource):
 		}
 
 class BusTypeResource(ModelResource):
-	name = fields.ToOneField(DeviceTypeResource, 'name', full=True)
+	name = fields.ToOneField(CommunicationTypeResource, 'name', full=True)
 
 	class Meta:
 		queryset = BusType.objects.all()
@@ -89,7 +89,7 @@ class SequenceResource(ModelResource):
 
 class DeviceResource(ModelResource):
 	bus = fields.ToOneField(BusResource, 'bus', full=True)
-	type = fields.ToManyField('dashboard.api.resources.DeviceTypeResource', 'type', full=True)
+	type = fields.ToManyField('dashboard.api.resources.CommunicationTypeResource', 'type', full=True)
 
 	class Meta:
 		queryset = Device.objects.all()

@@ -5,14 +5,14 @@ from tastypie.models import create_api_key
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
-class DeviceType(models.Model):
+class CommunicationType(models.Model):
 	name = models.CharField(max_length=20)
 
 	def __str__(self):
 		return self.name
 
 class BusType(models.Model):
-	name = models.ForeignKey(DeviceType)
+	name = models.ForeignKey(CommunicationType)
 
 	def __str__(self):
 		return self.name.name
@@ -36,7 +36,7 @@ class Bus(models.Model):
 class Device(models.Model):
 	name = models.CharField(max_length=20)
 	place = models.CharField(max_length=50)
-	type = models.ManyToManyField(DeviceType)
+	type = models.ManyToManyField(CommunicationType)
 	bus = models.ForeignKey(Bus, blank=True, null=True)
 
 	def __str__(self):

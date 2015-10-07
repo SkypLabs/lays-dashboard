@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DeviceType, BusType, MeasureType, Bus, Sequence, Device, Measure
+from .models import CommunicationType, BusType, MeasureType, Bus, Sequence, Device, Measure
 
 class BusAdmin(admin.ModelAdmin):
 	list_display = ('name', 'type')
@@ -13,7 +13,7 @@ class DeviceAdmin(admin.ModelAdmin):
 class MeasureAdmin(admin.ModelAdmin):
 	list_display = ('value', 'type', 'device', 'time')
 
-admin.site.register(DeviceType)
+admin.site.register(CommunicationType)
 admin.site.register(BusType)
 admin.site.register(MeasureType)
 admin.site.register(Bus, BusAdmin)
