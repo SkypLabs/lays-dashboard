@@ -11,7 +11,7 @@ class CommunicationTypeResource(ModelResource):
 		resource_name = 'communication_type'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -28,7 +28,7 @@ class BusTypeResource(ModelResource):
 		resource_name = 'bus_type'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -43,7 +43,7 @@ class MeasureTypeResource(ModelResource):
 		resource_name = 'measure_type'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -60,7 +60,7 @@ class BusResource(ModelResource):
 		resource_name = 'bus'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -78,7 +78,7 @@ class SequenceResource(ModelResource):
 		resource_name = 'sequence'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -96,7 +96,7 @@ class DeviceResource(ModelResource):
 		resource_name = 'device'
 		excludes = ['id']
 		ordering = ['name']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
@@ -115,7 +115,7 @@ class MeasureResource(ModelResource):
 		resource_name = 'measure'
 		excludes = ['id']
 		ordering = ['time']
-		allowed_methods = ['post', 'get', 'patch', 'delete']
+		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
 		authorization = DjangoAuthorization()
 		always_return_date = True
