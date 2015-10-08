@@ -89,7 +89,7 @@ class SequenceResource(ModelResource):
 
 class DeviceResource(ModelResource):
 	bus = fields.ToOneField(BusResource, 'bus', full=True)
-	type = fields.ToManyField('dashboard.api.resources.CommunicationTypeResource', 'type', full=True)
+	communication_type = fields.ToManyField('dashboard.api.resources.CommunicationTypeResource', 'communication_type', full=True)
 
 	class Meta:
 		queryset = Device.objects.all()
