@@ -1,2 +1,4 @@
 django==1.8.4
 django-tastypie
+django-bootstrap-static
+django-static-jquery
