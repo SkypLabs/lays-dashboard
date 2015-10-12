@@ -11,11 +11,11 @@ class SequenceResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.i2c_type = CommunicationType.objects.create(name='I2C')
-		self.i2c_bus_type = BusType.objects.create(name=self.i2c_type)
-		self.i2c_bus = Bus.objects.create(name='i2c01', type=self.i2c_bus_type)
-		self.device = Device.objects.create(name='sentemp01', type='S', bus=self.i2c_bus, place='In the ground', description='Temperature sensor')
-		self.device.communication_type.add(self.i2c_type)
+		self.communication_type = CommunicationType.objects.create(name='I2C')
+		self.bus_type = BusType.objects.create(name=self.communication_type)
+		self.bus = Bus.objects.create(name='i2c01', type=self.bus_type)
+		self.device = Device.objects.create(name='sentemp01', type='S', bus=self.bus, place='In the ground', description='Temperature sensor')
+		self.device.communication_type.add(self.communication_type)
 
 		self.entry = Sequence.objects.create(name='Enable sensor', description='Used to enable the sensor', payload='aabbccddeeffgg')
 		self.entry.device.add(self.device)

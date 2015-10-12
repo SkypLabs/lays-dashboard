@@ -11,15 +11,15 @@ class BusResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.i2c_type = CommunicationType.objects.create(name='I2C')
-		self.i2c_bus_type = BusType.objects.create(name=self.i2c_type)
+		self.communication_type = CommunicationType.objects.create(name='I2C')
+		self.bus_type = BusType.objects.create(name=self.communication_type)
 
-		self.entry = Bus.objects.create(name='i2c01', type=self.i2c_bus_type)
+		self.entry = Bus.objects.create(name='i2c01', type=self.bus_type)
 		self.list_url = '/api/v1/bus/'
 		self.detail_url = '/api/v1/bus/{0}/'.format(self.entry.pk)
 		self.post_data = {
 			'name': 'i2c02',
-			'type': '/api/v1/bus_type/{0}/'.format(self.i2c_bus_type.pk)
+			'type': '/api/v1/bus_type/{0}/'.format(self.bus_type.pk)
 		}
 
 	def get_credentials(self):

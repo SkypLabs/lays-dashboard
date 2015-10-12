@@ -11,15 +11,15 @@ class BusTypeResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.i2c_type = CommunicationType.objects.create(name='I2C')
-		self.uart_type = CommunicationType.objects.create(name='UART')
-		self.spi_type = CommunicationType.objects.create(name='SPI')
+		self.type_1 = CommunicationType.objects.create(name='I2C')
+		self.type_2 = CommunicationType.objects.create(name='UART')
+		self.type_3 = CommunicationType.objects.create(name='SPI')
 
-		self.entry = BusType.objects.create(name=self.i2c_type)
+		self.entry = BusType.objects.create(name=self.type_1)
 		self.list_url = '/api/v1/bus_type/'
 		self.detail_url = '/api/v1/bus_type/{0}/'.format(self.entry.pk)
 		self.post_data = {
-			'name': '/api/v1/communication_type/{0}/'.format(self.uart_type.pk)
+			'name': '/api/v1/communication_type/{0}/'.format(self.type_2.pk)
 		}
 
 	def get_credentials(self):
@@ -64,7 +64,7 @@ class BusTypeResourceTest(ResourceTestCase):
 		self.user.user_permissions.add(Permission.objects.get(codename='change_bustype'))
 		original_data = self.deserialize(self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials()))
 		new_data = original_data.copy()
-		new_data['name'] = '/api/v1/communication_type/{0}/'.format(self.spi_type.pk)
+		new_data['name'] = '/api/v1/communication_type/{0}/'.format(self.type_3.pk)
 
 		self.assertEqual(BusType.objects.count(), 1)
 		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentification=self.get_credentials()))

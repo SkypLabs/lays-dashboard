@@ -11,21 +11,21 @@ class DeviceResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.i2c_type = CommunicationType.objects.create(name='I2C')
-		self.i2c_bus_type = BusType.objects.create(name=self.i2c_type)
-		self.i2c_bus = Bus.objects.create(name='i2c01', type=self.i2c_bus_type)
+		self.communication_type = CommunicationType.objects.create(name='I2C')
+		self.bus_type = BusType.objects.create(name=self.communication_type)
+		self.bus = Bus.objects.create(name='i2c01', type=self.bus_type)
 
-		self.entry = Device.objects.create(name='sentemp01', type='S', bus=self.i2c_bus, place='In the ground', description='Temperature sensor')
-		self.entry.communication_type.add(self.i2c_type)
+		self.entry = Device.objects.create(name='sentemp01', type='S', bus=self.bus, place='In the ground', description='Temperature sensor')
+		self.entry.communication_type.add(self.communication_type)
 		self.list_url = '/api/v1/device/'
 		self.detail_url = '/api/v1/device/{0}/'.format(self.entry.pk)
 		self.post_data = {
 			'name': 'sentemp02',
 			'type': 'S',
 			'communication_type': [
-				'/api/v1/communication_type/{0}/'.format(self.i2c_type.pk),
+				'/api/v1/communication_type/{0}/'.format(self.communication_type.pk),
 			],
-			'bus': '/api/v1/bus/{0}/'.format(self.i2c_bus.pk),
+			'bus': '/api/v1/bus/{0}/'.format(self.bus.pk),
 			'place': 'Outside',
 			'description': 'Another temperature sensor',
 		}
