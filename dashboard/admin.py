@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from tastypie.admin import ApiKeyInline
 from .models import CommunicationType, BusType, MeasureType, Bus, Sequence, Device, Measure
 
 class BusAdmin(admin.ModelAdmin):
@@ -13,6 +16,9 @@ class DeviceAdmin(admin.ModelAdmin):
 class MeasureAdmin(admin.ModelAdmin):
 	list_display = ('value', 'type', 'device', 'time')
 
+class UserModelAdmin(UserAdmin):
+    inlines = UserAdmin.inlines + [ApiKeyInline]
+
 admin.site.register(CommunicationType)
 admin.site.register(BusType)
 admin.site.register(MeasureType)
@@ -20,3 +26,6 @@ admin.site.register(Bus, BusAdmin)
 admin.site.register(Sequence, SequenceAdmin)
 admin.site.register(Device, DeviceAdmin)
 admin.site.register(Measure, MeasureAdmin)
+
+admin.site.unregister(User)
+admin.site.register(User,UserModelAdmin)
