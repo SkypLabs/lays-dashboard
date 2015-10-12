@@ -105,4 +105,5 @@ STATIC_URL = '/static/'
 
 # Tastypie settings
 
+TASTYPIE_DEFAULT_FORMATS = ['json']
 TASTYPIE_DATETIME_FORMATTING = 'iso-8601'
