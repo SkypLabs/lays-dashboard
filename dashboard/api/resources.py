@@ -2,7 +2,7 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
-from dashboard.models import CommunicationType, BusType, MeasureType, Bus, Sequence, Device, Measure
+from dashboard.models import CommunicationType, BusType, MeasureType, Bus, Device, Measure, Sequence
 from tastypie.serializers import Serializer
 
 class CommunicationTypeResource(ModelResource):
@@ -70,23 +70,6 @@ class BusResource(ModelResource):
 			'type' : ALL_WITH_RELATIONS,
 		}
 
-class SequenceResource(ModelResource):
-	device = fields.ToManyField('dashboard.api.resources.DeviceResource', 'device', full=True)
-
-	class Meta:
-		queryset = Sequence.objects.all()
-		resource_name = 'sequence'
-		excludes = ['id']
-		ordering = ['name']
-		allowed_methods = ['post', 'get', 'put', 'delete']
-		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
-		authorization = DjangoAuthorization()
-		always_return_date = True
-		include_resource_uri = False
-		filtering = {
-			'name' : ALL,
-		}
-
 class DeviceResource(ModelResource):
 	bus = fields.ToOneField(BusResource, 'bus', full=True)
 	communication_type = fields.ToManyField('dashboard.api.resources.CommunicationTypeResource', 'communication_type', full=True)
@@ -103,7 +86,10 @@ class DeviceResource(ModelResource):
 		include_resource_uri = False
 		filtering = {
 			'name' : ALL,
+			'type' : ALL,
+			'communication_type' : ALL_WITH_RELATIONS,
 			'bus' : ALL_WITH_RELATIONS,
+			'place' : ALL,
 		}
 
 class MeasureResource(ModelResource):
@@ -123,4 +109,22 @@ class MeasureResource(ModelResource):
 		filtering = {
 			'device' : ALL_WITH_RELATIONS,
 			'type' : ALL_WITH_RELATIONS,
+		}
+
+class SequenceResource(ModelResource):
+	device = fields.ToManyField('dashboard.api.resources.DeviceResource', 'device', full=True)
+
+	class Meta:
+		queryset = Sequence.objects.all()
+		resource_name = 'sequence'
+		excludes = ['id']
+		ordering = ['name']
+		allowed_methods = ['post', 'get', 'put', 'delete']
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
+		authorization = DjangoAuthorization()
+		always_return_date = True
+		include_resource_uri = False
+		filtering = {
+			'name' : ALL,
+			'device' : ALL_WITH_RELATIONS,
 		}
