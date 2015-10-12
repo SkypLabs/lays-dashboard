@@ -10,3 +10,7 @@ migrate:
 	bash -c 'docker run --rm --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app lays-dev migrate'
 createsuperuser:
 	bash -c 'docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app lays-dev createsuperuser'
+test:
+	bash -c 'docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app lays-dev test unittest/'
+shell:
+	bash -c 'docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app lays-dev shell'
