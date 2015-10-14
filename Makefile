@@ -3,10 +3,12 @@ GID = $(shell id -g)
 PWD = $(shell pwd)
 IMAGE = lays-dev
 
-all: startc
+all: startd
 
-startc:
+startd:
 	docker run --name lays-dev -d --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app -p 8000:8000 $(IMAGE)
+startc:
+	docker start $(IMAGE)
 stopc:
 	docker stop $(IMAGE)
 removec:
