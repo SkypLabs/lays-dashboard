@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'django_static_jquery',
 	'bootstrap',
+	'highcharts',
 	'tastypie',
 	'dashboard',
 )
