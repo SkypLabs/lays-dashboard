@@ -23,7 +23,7 @@
 						<tr>
 							<th>{{ item.type.name }}</th>
 							<th>{{ item.value }}</th>
-							<th>{{ item.time }}</th>
+							<th>{{ item.time|date:"r" }}</th>
 						</tr>
 						{% endfor %}
 					</tbody>
