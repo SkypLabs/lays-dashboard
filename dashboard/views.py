@@ -13,7 +13,7 @@ def index(request):
 		data[type] = dict()
 		data[type]["total_count"] = Measure.objects.filter(type__name=type).count()
 		for device in devices:
-			data[type][device] = Measure.objects.filter(type__name=type).filter(device__name=device).order_by('time').reverse()[:10].reverse()
+			data[type][device] = reversed(Measure.objects.filter(type__name=type).filter(device__name=device).order_by('-time')[:10])
 
 	context = {
 		'data' : data,
