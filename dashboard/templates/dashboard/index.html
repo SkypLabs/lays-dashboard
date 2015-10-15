@@ -5,110 +5,118 @@
 	<script type="text/javascript" src="{% static 'static_jquery/js/jquery.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
 
-	{% for type,devices in data.items %}
-	<script type="text/javascript">
-		$(function() {
-			$('#{{ type }}').highcharts({
-				chart: {
-					type: 'spline',
-					animation: Highcharts.svg,
-					marginRight: 10,
-					events: {
-						load: function() {
-							setInterval(function() {
-								refresh{{ type }}();
-							}, 3000);
-						}
-					}
-				},
-				title: {
-					text: '{{ type }}',
-				},
-				xAxis: {
-					type: 'datetime',
-					tickPixelInterval: 150
-				},
-				yAxis: {
-					title: {
-						text: '{{ type }}'
-					},
-					plotLines: [{
-						value: 0,
-						width: 1,
-						color: '#808080'
-					}]
-				},
-				tooltip: {
-					valueSuffix: ''
-				},
-				exporting: {
-					enabled: false
-				},
-				series: [
-					{% for device,measures in devices.items %}
-						{% if device != "total_count" %}
-					{
-						id: '{{ device }}',
-						name: '{{ device }}',
-						data: (function() {
-							var data = [];
+	{% if existing_devices and existing_data %}
+		{% for type,info in data.items %}
+			{% if info.total != 0 %}
+				<script type="text/javascript">
+					$(function() {
+						$('#{{ type }}').highcharts({
+							chart: {
+								type: 'spline',
+								animation: Highcharts.svg,
+								marginRight: 10,
+								events: {
+									load: function() {
+										setInterval(function() {
+											refresh{{ type }}();
+										}, 3000);
+									}
+								}
+							},
+							title: {
+								text: '{{ type }}',
+							},
+							xAxis: {
+								type: 'datetime',
+								tickPixelInterval: 150
+							},
+							yAxis: {
+								title: {
+									text: '{{ type }}'
+								},
+								plotLines: [{
+									value: 0,
+									width: 1,
+									color: '#808080'
+								}]
+							},
+							tooltip: {
+								valueSuffix: ''
+							},
+							exporting: {
+								enabled: false
+							},
+							series: [
+								{% for device,measures in info.devices.items %}
+									{% if measures|length != 0 %}
+										{
+											id: '{{ device }}',
+											name: '{{ device }}',
+											data: (function() {
+												var data = [];
 
-								{% for measure in measures %}
-								data.push({
-									x: (new Date("{{ measure.time|date:"c" }}")).getTime(),
-									y: {{ measure.value }}
-								});
+												{% for measure in measures %}
+													data.push({
+														x: (new Date("{{ measure.time|date:"c" }}")).getTime(),
+														y: {{ measure.value }}
+													});
+												{% endfor %}
+
+												return data;
+											}())
+										},
+									{% endif  %}
 								{% endfor %}
+							]
+						});
+					});
 
-							return data;
-						}())
-					},
-						{% endif %}
-					{% endfor %}
-				]
-			});
-		});
+					function refresh{{ type }}() {
+						var chart = $('#{{ type }}').highcharts();
 
-		function refresh{{ type }}() {
-			var chart = $('#{{ type }}').highcharts();
-
-			if (typeof refresh{{ type }}.url  === 'undefined') {
-				refresh{{ type }}.url = "/api/v1/measure/?type__name={{ type }}&offset={{ devices.total_count }}&limit=5";
-			}
-
-			$.ajax({
-				dataType: "json",
-				url: refresh{{ type }}.url,
-				success: function(data) {
-
-					if (data.meta["next"] !== null) {
-						if (data.objects.length > 0) {
-							$.each(data.objects, function(i, val) {
-								var x = new Date(val["time"]).getTime(),
-									y = val["value"];
-
-									chart.get(val["device"]["name"]).addPoint([x, y], false, true);
-							});
-
-							chart.redraw();
+						if (typeof refresh{{ type }}.url  === 'undefined') {
+							refresh{{ type }}.url = "/api/v1/measure/?type__name={{ type }}&offset={{ devices.total }}&limit=5";
 						}
 
-						refresh{{ type }}.url = data.meta["next"];
+						$.ajax({
+							dataType: "json",
+							url: refresh{{ type }}.url,
+							success: function(data) {
+
+								if (data.meta["next"] !== null) {
+									if (data.objects.length > 0) {
+										$.each(data.objects, function(i, val) {
+											var x = new Date(val["time"]).getTime(),
+												y = val["value"];
+
+												chart.get(val["device"]["name"]).addPoint([x, y], false, true);
+										});
+
+										chart.redraw();
+									}
+
+									refresh{{ type }}.url = data.meta["next"];
+								}
+							}
+						});
 					}
-				}
-			});
-		}
-	</script>
-	{% endfor %}
+				</script>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
 {% endblock %}
 
 {% block content %}
-	{% if existing_device %}
-		{% for type,devices in data.items %}
-		<div id="{{ type }}" style="height: 300px"></div>
-		{% empty %}
+	{% if existing_devices %}
+		{% if existing_data %}
+			{% for type,info in data.items %}
+				{% if info.total != 0 %}
+					<div id="{{ type }}" style="height: 300px"></div>
+				{% endif %}
+			{% endfor %}
+		{% else %}
 			{% include "dashboard/no_data.html" %}
-		{% endfor %}
+		{% endif %}
 	{% else %}
 		{% include "dashboard/no_device.html" %}
 	{% endif %}

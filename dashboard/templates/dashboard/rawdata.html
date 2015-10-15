@@ -1,7 +1,7 @@
 {% extends "dashboard/navbar.html" %}
 
 {% block content %}
-	{% if existing_device %}
+	{% if existing_devices %}
 		{% regroup measure by device.name as device_list %}
 		{% for device in device_list %}
 			<div class="panel panel-default">
