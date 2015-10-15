@@ -12,7 +12,7 @@ class CommunicationType(models.Model):
 		return self.name
 
 class BusType(models.Model):
-	name = models.ForeignKey(CommunicationType)
+	name = models.OneToOneField(CommunicationType)
 
 	def __str__(self):
 		return self.name.name
