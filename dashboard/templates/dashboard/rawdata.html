@@ -1,39 +1,39 @@
 {% extends "dashboard/navbar.html" %}
 
 {% block content %}
-	{% regroup measure by device.name as device_list %}
-	{% for device in device_list %}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ device.grouper }}</h3>
-			</div>
-			<div class="panel-body">
-				{% if device.list %}
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>Type</th>
-							<th>Data</th>
-							<th>Time</th>
-						</tr>
-					</thead>
+	{% if existing_device %}
+		{% regroup measure by device.name as device_list %}
+		{% for device in device_list %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">{{ device.grouper }}</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Data</th>
+								<th>Time</th>
+							</tr>
+						</thead>
 
-					<tbody>
-						{% for item in device.list %}
-						<tr>
-							<th>{{ item.type.name }}</th>
-							<th>{{ item.value }}</th>
-							<th>{{ item.time|date:"r" }}</th>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				{% else %}
-					{% include "dashboard/no_data.html" %}
-				{% endif %}
+						<tbody>
+							{% for item in device.list %}
+							<tr>
+								<th>{{ item.type.name }}</th>
+								<th>{{ item.value }}</th>
+								<th>{{ item.time|date:"r" }}</th>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
-	{% empty %}
+		{% empty %}
+			{% include "dashboard/no_data.html" %}
+		{% endfor %}
+	{% else %}
 		{% include "dashboard/no_device.html" %}
-	{% endfor %}
+	{% endif %}
 {% endblock %}

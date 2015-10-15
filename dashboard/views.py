@@ -9,7 +9,7 @@ def index(request):
 	devices = Device.objects.values_list('name', flat=True).distinct()
 	data = dict()
 
-	for type in types :
+	for type in types:
 		data[type] = dict()
 		data[type]["total_count"] = Measure.objects.filter(type__name=type).count()
 		for device in devices:
@@ -22,9 +22,11 @@ def index(request):
 	return render(request, 'dashboard/index.html', context)
 
 def rawdata(request):
+	existing_device = Device.objects.exists()
 	measure = Measure.objects.order_by('time').order_by('device').reverse()
 
 	context = {
+		'existing_device' : existing_device,
 		'measure' : measure,
 	}
 
