@@ -2,7 +2,7 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
-from dashboard.models import CommunicationType, BusType, MeasureType, Bus, Device, Measure, Sequence
+from dashboard.models import CommunicationType, BusType, MeasureType, MeasureUnit, Bus, Device, Measure, Sequence
 from tastypie.serializers import Serializer
 
 class CommunicationTypeResource(ModelResource):
@@ -38,9 +38,27 @@ class BusTypeResource(ModelResource):
 		}
 
 class MeasureTypeResource(ModelResource):
+
 	class Meta:
 		queryset = MeasureType.objects.all()
 		resource_name = 'measure_type'
+		excludes = ['id']
+		ordering = ['name']
+		allowed_methods = ['post', 'get', 'put', 'delete']
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
+		authorization = DjangoAuthorization()
+		always_return_date = True
+		include_resource_uri = False
+		filtering = {
+			'name' : ALL,
+		}
+
+class MeasureUnitResource(ModelResource):
+	type = fields.ToOneField(MeasureTypeResource, 'type', full=True)
+
+	class Meta:
+		queryset = MeasureUnit.objects.all()
+		resource_name = 'measure_unit'
 		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'put', 'delete']
@@ -93,7 +111,7 @@ class DeviceResource(ModelResource):
 		}
 
 class MeasureResource(ModelResource):
-	type = fields.ToOneField(MeasureTypeResource, 'type', full=True)
+	unit = fields.ToOneField(MeasureUnitResource, 'unit', full=True)
 	device = fields.ToOneField(DeviceResource, 'device', full=True)
 
 	class Meta:
@@ -108,7 +126,7 @@ class MeasureResource(ModelResource):
 		include_resource_uri = False
 		filtering = {
 			'device' : ALL_WITH_RELATIONS,
-			'type' : ALL_WITH_RELATIONS,
+			'unit' : ALL_WITH_RELATIONS,
 		}
 
 class SequenceResource(ModelResource):

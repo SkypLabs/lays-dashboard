@@ -23,6 +23,13 @@ class MeasureType(models.Model):
 	def __str__(self):
 		return self.name
 
+class MeasureUnit(models.Model):
+	name = models.CharField(max_length=10, unique=True)
+	type = models.ForeignKey(MeasureType)
+
+	def __str__(self):
+		return self.name + " ({0})".format(self.type.name)
+
 class Bus(models.Model):
 	name = models.CharField(max_length=20, unique=True)
 	type = models.ForeignKey(BusType)
@@ -52,7 +59,7 @@ class Device(models.Model):
 		return self.name
 
 class Measure(models.Model):
-	type = models.ForeignKey(MeasureType)
+	unit = models.ForeignKey(MeasureUnit)
 	device = models.ForeignKey(Device)
 	time = models.DateTimeField(default=now)
 	value = models.FloatField()

@@ -2,7 +2,7 @@ from datetime import datetime
 from django.contrib.auth.models import User, Permission
 from tastypie.test import ResourceTestCase
 from tastypie.models import ApiKey
-from dashboard.models import CommunicationType, BusType, Bus, Device, MeasureType, Measure
+from dashboard.models import CommunicationType, BusType, MeasureType, MeasureUnit, Bus, Device, Measure
 
 class MeasureResourceTest(ResourceTestCase):
 	def setUp(self):
@@ -18,15 +18,16 @@ class MeasureResourceTest(ResourceTestCase):
 		self.device = Device.objects.create(name='sentemp01', type='S', bus=self.bus, place='In the ground', description='Temperature sensor')
 		self.device.communication_type.add(self.communication_type)
 		self.measure_type = MeasureType.objects.create(name='Temperature')
+		self.unit = MeasureUnit.objects.create(name='°C', type=self.measure_type)
 
-		self.entry = Measure.objects.create(type=self.measure_type, device=self.device, time=datetime(2012, 3, 1, 13, 6, 12), value=34.2)
+		self.entry = Measure.objects.create(unit=self.unit, device=self.device, time=datetime(2012, 3, 1, 13, 6, 12), value=23.3)
 		self.list_url = '/api/v1/measure/'
 		self.detail_url = '/api/v1/measure/{0}/'.format(self.entry.pk)
 		self.post_data = {
-			'type': '/api/v1/measure_type/{0}/'.format(self.measure_type.pk),
+			'unit': '/api/v1/measure_unit/{0}/'.format(self.unit.pk),
 			'device': '/api/v1/device/{0}/'.format(self.device.pk),
 			'time': '2012-05-01T19:13:42',
-			'value': '57.3',
+			'value': '25.1',
 		}
 
 	def get_credentials(self):
@@ -40,7 +41,7 @@ class MeasureResourceTest(ResourceTestCase):
 
 		self.assertValidJSONResponse(resp)
 		self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-		self.assertEqual(self.deserialize(resp)['objects'][0]['value'], 34.2)
+		self.assertEqual(self.deserialize(resp)['objects'][0]['value'], 23.3)
 
 	def test_get_detail_unauthorized(self):
 		self.assertHttpUnauthorized(self.api_client.get(self.detail_url, format='json'))
@@ -49,10 +50,10 @@ class MeasureResourceTest(ResourceTestCase):
 		resp = self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials())
 
 		self.assertValidJSONResponse(resp)
-		self.assertEqual(self.deserialize(resp)['type']['name'], 'Temperature')
+		self.assertEqual(self.deserialize(resp)['unit']['name'], '°C')
 		self.assertEqual(self.deserialize(resp)['device']['name'], 'sentemp01')
 		self.assertEqual(self.deserialize(resp)['time'], '2012-03-01T13:06:12')
-		self.assertEqual(self.deserialize(resp)['value'], 34.2)
+		self.assertEqual(self.deserialize(resp)['value'], 23.3)
 
 	def test_post_list_unauthorized(self):
 		self.assertHttpUnauthorized(self.api_client.post(self.list_url, format='json', data=self.post_data))

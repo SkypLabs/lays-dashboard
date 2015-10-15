@@ -19,10 +19,10 @@ def index(request):
 			for type in types:
 				data[type] = dict()
 				data[type]["devices"] = dict()
-				data[type]["total"] = Measure.objects.filter(type__name=type).count()
+				data[type]["total"] = Measure.objects.filter(unit__type__name=type).count()
 
 				for device in devices:
-					data[type]["devices"][device] = list(reversed(Measure.objects.filter(type__name=type).filter(device__name=device).order_by('-time')[:10]))
+					data[type]["devices"][device] = list(reversed(Measure.objects.filter(unit__type__name=type).filter(device__name=device).order_by('-time')[:10]))
 
 			context = {
 				'existing_devices' : existing_devices,
