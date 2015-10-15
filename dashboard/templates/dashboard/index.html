@@ -103,7 +103,13 @@
 {% endblock %}
 
 {% block content %}
-	{% for type,devices in data.items %}
-	<div id="{{ type }}" style="height: 300px"></div>
-	{% endfor %}
+	{% if existing_device %}
+		{% for type,devices in data.items %}
+		<div id="{{ type }}" style="height: 300px"></div>
+		{% empty %}
+			{% include "dashboard/no_data.html" %}
+		{% endfor %}
+	{% else %}
+		{% include "dashboard/no_device.html" %}
+	{% endif %}
 {% endblock %}

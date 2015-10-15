@@ -5,6 +5,7 @@ from .models import Measure, MeasureType, Device
 def index(request):
 	settings.USE_L10N = False
 
+	existing_device = Device.objects.exists()
 	types = MeasureType.objects.values_list('name', flat=True).distinct()
 	devices = Device.objects.values_list('name', flat=True).distinct()
 	data = dict()
@@ -16,6 +17,7 @@ def index(request):
 			data[type][device] = reversed(Measure.objects.filter(type__name=type).filter(device__name=device).order_by('-time')[:10])
 
 	context = {
+		'existing_device' : existing_device,
 		'data' : data,
 	}
 
