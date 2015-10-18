@@ -6,7 +6,7 @@ IMAGE = lays-dev
 all: startd
 
 startd:
-	docker run --name lays-dev -d --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app -p 8000:8000 $(IMAGE)
+	docker run --name $(IMAGE) -d --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app -p 8000:8000 $(IMAGE)
 startc:
 	docker start $(IMAGE)
 stopc:
