@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
+from django.http import HttpResponse
+from django.template import loader, Context
 from django.contrib.auth.decorators import login_required
 from .models import Measure, MeasureType, Device
 
@@ -58,3 +60,18 @@ def rawdata(request):
 		}
 
 	return render(request, 'dashboard/rawdata.html', context)
+
+@login_required
+def rawdata_export_csv(request):
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="measures.csv"'
+
+	csv_data = Measure.objects.all()
+
+	t = loader.get_template('dashboard/rawdata_export_csv.txt')
+	c = Context({
+		'measures': csv_data,
+	})
+
+	response.write(t.render(c))
+	return response
