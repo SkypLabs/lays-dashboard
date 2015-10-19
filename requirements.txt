@@ -1,3 +1,4 @@
 django==1.8.5
 django-pipeline
 django-tastypie
+pika==0.10.0
