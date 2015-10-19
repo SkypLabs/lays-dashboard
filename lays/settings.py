@@ -57,6 +57,10 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'lays.urls'
 
+LOGIN_URL = '/admin/login'
+
+LOGOUT_URL = '/admin/logout'
+
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',

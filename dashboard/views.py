@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .models import Measure, MeasureType, Device
 
+@login_required
 def index(request):
 	existing_devices = Device.objects.exists()
 	existing_data = Measure.objects.exists()
@@ -39,6 +41,7 @@ def index(request):
 
 	return render(request, 'dashboard/index.html', context)
 
+@login_required
 def rawdata(request):
 	existing_devices = Device.objects.exists()
 
