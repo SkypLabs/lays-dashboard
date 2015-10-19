@@ -1,41 +1,55 @@
 {% extends "dashboard/navbar.html" %}
 
 {% block content %}
-	{% if existing_devices %}
-		{% regroup measure by device.name as device_list %}
-		{% for device in device_list %}
+	<div class="row">
+		<div class="col-lg-10">
+		{% if existing_devices %}
+			{% regroup measure by device.name as device_list %}
+			{% for device in device_list %}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">{{ device.grouper }}</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Type</th>
+									<th>Unit</th>
+									<th>Data</th>
+									<th>Time</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{% for item in device.list %}
+								<tr>
+									<th>{{ item.unit.type.name }}</th>
+									<th>{{ item.unit.name }}</th>
+									<th>{{ item.value }}</th>
+									<th>{{ item.time|date:"r" }}</th>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			{% empty %}
+				{% include "dashboard/no_data.html" %}
+			{% endfor %}
+		{% else %}
+			{% include "dashboard/no_device.html" %}
+		{% endif %}
+		</div>
+		<div class="col-lg-2">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">{{ device.grouper }}</h3>
+					<h3 class="panel-title">Options</h3>
 				</div>
 				<div class="panel-body">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Type</th>
-								<th>Unit</th>
-								<th>Data</th>
-								<th>Time</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							{% for item in device.list %}
-							<tr>
-								<th>{{ item.unit.type.name }}</th>
-								<th>{{ item.unit.name }}</th>
-								<th>{{ item.value }}</th>
-								<th>{{ item.time|date:"r" }}</th>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
+					<a class="btn btn-default btn-block" href="{% url 'dashboard:rawdata_export_csv' %}" role="button">Export to CSV</a>
 				</div>
 			</div>
-		{% empty %}
-			{% include "dashboard/no_data.html" %}
-		{% endfor %}
-	{% else %}
-		{% include "dashboard/no_device.html" %}
-	{% endif %}
+		</div>
+	</div>
 {% endblock %}
