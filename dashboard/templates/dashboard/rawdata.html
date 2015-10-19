@@ -13,6 +13,7 @@
 						<thead>
 							<tr>
 								<th>Type</th>
+								<th>Unit</th>
 								<th>Data</th>
 								<th>Time</th>
 							</tr>
@@ -21,7 +22,8 @@
 						<tbody>
 							{% for item in device.list %}
 							<tr>
-								<th>{{ item.type.name }}</th>
+								<th>{{ item.unit.type.name }}</th>
+								<th>{{ item.unit.name }}</th>
 								<th>{{ item.value }}</th>
 								<th>{{ item.time|date:"r" }}</th>
 							</tr>
