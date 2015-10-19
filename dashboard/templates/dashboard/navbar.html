@@ -7,6 +7,7 @@
 
 {% block head_js %}
 	<script type="text/javascript" src="{% static 'static_jquery/js/jquery.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 {% endblock %}
 
 {% block head_others %}
@@ -31,7 +32,14 @@
 				<li><a href="{% url 'dashboard:rawdata' %}">Raw Data</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{% url 'admin:index' %}">Admin</a></li>
+				<li class="dropdown">
+				<a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user }} <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="{% url 'admin:index' %}">Settings</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{% url 'admin:logout' %}">Logout</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 	</div>
