@@ -75,7 +75,7 @@
 						var chart = $('#{{ type }}').highcharts();
 
 						if (typeof refresh{{ type }}.url  === 'undefined') {
-							refresh{{ type }}.url = "/api/v1/measure/?type__name={{ type }}&offset={{ devices.total }}&limit=5";
+							refresh{{ type }}.url = "/api/v1/measure/?unit__type__name={{ type }}&offset={{ info.total }}&limit=5";
 						}
 
 						$.ajax({

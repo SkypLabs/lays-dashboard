@@ -68,6 +68,7 @@ class MeasureUnitResource(ModelResource):
 		include_resource_uri = False
 		filtering = {
 			'name' : ALL,
+			'type' : ALL_WITH_RELATIONS,
 		}
 
 class BusResource(ModelResource):
