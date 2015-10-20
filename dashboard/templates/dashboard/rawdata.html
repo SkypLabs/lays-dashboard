@@ -47,7 +47,7 @@
 					<h3 class="panel-title">Options</h3>
 				</div>
 				<div class="panel-body">
-					<a class="btn btn-default btn-block" href="{% url 'dashboard:rawdata_export_csv' %}" role="button">Export to CSV</a>
+					<a class="btn btn-default btn-block{% if not existing_devices or device_list|length == 0 %} disabled{% endif %}" href="{% url 'dashboard:rawdata_export_csv' %}" role="button">Export to CSV</a>
 				</div>
 			</div>
 		</div>
