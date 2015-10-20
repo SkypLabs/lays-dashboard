@@ -1,7 +1,4 @@
 from django.shortcuts import render
-from django.conf import settings
-from django.http import HttpResponse
-from django.template import loader, Context
 from django.contrib.auth.decorators import login_required
 from .models import Measure, MeasureType, Device
 
@@ -12,6 +9,7 @@ def index(request):
 
 	if existing_devices:
 		if existing_data:
+			from django.conf import settings
 			settings.USE_L10N = False
 
 			types = MeasureType.objects.values_list('name', flat=True).distinct()
@@ -63,6 +61,8 @@ def rawdata(request):
 
 @login_required
 def rawdata_export_csv(request):
+	from django.http import HttpResponse
+	from django.template import loader, Context
 	from datetime import datetime
 
 	dt_format = "%Y-%m-%d_%H-%M-%S"
