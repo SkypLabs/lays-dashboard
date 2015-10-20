@@ -63,8 +63,14 @@ def rawdata(request):
 
 @login_required
 def rawdata_export_csv(request):
+	from datetime import datetime
+
+	dt_format = "%Y-%m-%d_%H-%M-%S"
+	dt = datetime.today()
+	s = dt.strftime(dt_format)
+
 	response = HttpResponse(content_type='text/csv')
-	response['Content-Disposition'] = 'attachment; filename="measures.csv"'
+	response['Content-Disposition'] = 'attachment; filename="lays-measures-{0}.csv"'.format(s)
 
 	csv_data = Measure.objects.all()
 
