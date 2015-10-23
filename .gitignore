@@ -3,5 +3,6 @@
 *.pyc
 *.db
 *.sqlite*
-*/staticfiles/
-*/migrations/
+*static/
+*migrations/
+*bower_components/

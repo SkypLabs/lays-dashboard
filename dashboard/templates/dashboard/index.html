@@ -1,10 +1,8 @@
 {% extends "dashboard/navbar.html" %}
-{% load staticfiles %}
+{% load pipeline %}
 
 {% block head_js %}
-	<script type="text/javascript" src="{% static 'static_jquery/js/jquery.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+	{% javascript 'charts' %}
 
 	{% if existing_devices and existing_data %}
 		{% for type,info in data.items %}

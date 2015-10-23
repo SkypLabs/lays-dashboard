@@ -37,9 +37,7 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'django_static_jquery',
-	'bootstrap',
-	'highcharts',
+	'pipeline',
 	'tastypie',
 	'dashboard',
 )
@@ -108,7 +106,45 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = None
+
+STATICFILES_FINDERS = (
+	'django.contrib.staticfiles.finders.FileSystemFinder',
+	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+	'pipeline.finders.PipelineFinder',
+)
+
+PIPELINE_CSS = {
+	'default': {
+		'source_filenames': (
+			'bower_components/bootstrap/dist/css/bootstrap.css',
+		),
+		'output_filename': 'css/libs.min.css',
+	}
+}
+
+PIPELINE_JS = {
+	'default': {
+		'source_filenames': (
+			'bower_components/jquery/dist/jquery.js',
+			'bower_components/bootstrap/dist/js/bootstrap.js',
+		),
+		'output_filename': 'js/default.min.js',
+	},
+	'charts': {
+		'source_filenames': (
+			'bower_components/jquery/dist/jquery.js',
+			'bower_components/bootstrap/dist/js/bootstrap.js',
+			'bower_components/highcharts-release/highcharts.js',
+		),
+		'output_filename': 'js/charts.min.js',
+	}
+}
 
 # Tastypie settings
 

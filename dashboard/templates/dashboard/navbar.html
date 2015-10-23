@@ -1,13 +1,12 @@
 {% extends "dashboard/root.html" %}
-{% load staticfiles %}
+{% load pipeline %}
 
 {% block head_css %}
-	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+	{% stylesheet 'default' %}
 {% endblock %}
 
 {% block head_js %}
-	<script type="text/javascript" src="{% static 'static_jquery/js/jquery.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	{% javascript 'default' %}
 {% endblock %}
 
 {% block head_others %}
