@@ -119,6 +119,10 @@ STATICFILES_FINDERS = (
 	'pipeline.finders.PipelineFinder',
 )
 
+STATICFILES_DIRS = (
+	os.path.join(BASE_DIR, 'dashboard/static/bower_components'),
+)
+
 PIPELINE_CSS = {
 	'default': {
 		'source_filenames': (
@@ -131,16 +135,16 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
 	'default': {
 		'source_filenames': (
-			'bower_components/jquery/dist/jquery.js',
-			'bower_components/bootstrap/dist/js/bootstrap.js',
+			'jquery/dist/jquery.js',
+			'bootstrap/dist/js/bootstrap.js',
 		),
 		'output_filename': 'js/default.min.js',
 	},
 	'charts': {
 		'source_filenames': (
-			'bower_components/jquery/dist/jquery.js',
-			'bower_components/bootstrap/dist/js/bootstrap.js',
-			'bower_components/highcharts-release/highcharts.js',
+			'jquery/dist/jquery.js',
+			'bootstrap/dist/js/bootstrap.js',
+			'highcharts-release/highcharts.js',
 		),
 		'output_filename': 'js/charts.min.js',
 	}
