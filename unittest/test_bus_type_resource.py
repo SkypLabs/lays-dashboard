@@ -67,7 +67,7 @@ class BusTypeResourceTest(ResourceTestCase):
 		new_data['name'] = '/api/v1/communication_type/{0}/'.format(self.type_3.pk)
 
 		self.assertEqual(BusType.objects.count(), 1)
-		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentification=self.get_credentials()))
+		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentication=self.get_credentials()))
 		self.assertEqual(BusType.objects.count(), 1)
 
 	def test_delete_detail_unauthorized(self):

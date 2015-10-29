@@ -63,7 +63,7 @@ class CommunicationTypeResourceTest(ResourceTestCase):
 		new_data['name'] = 'SPI'
 
 		self.assertEqual(CommunicationType.objects.count(), 1)
-		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentification=self.get_credentials()))
+		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentication=self.get_credentials()))
 		self.assertEqual(CommunicationType.objects.count(), 1)
 
 	def test_delete_detail_unauthorized(self):

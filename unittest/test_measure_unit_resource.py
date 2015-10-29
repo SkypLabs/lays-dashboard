@@ -61,12 +61,13 @@ class MeasureUnitResourceTest(ResourceTestCase):
 
 	def test_put_detail_json(self):
 		self.user.user_permissions.add(Permission.objects.get(codename='change_measureunit'))
+		self.user.user_permissions.add(Permission.objects.get(codename='change_measuretype'))
 		original_data = self.deserialize(self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials()))
 		new_data = original_data.copy()
 		new_data['name'] = '°F'
 
 		self.assertEqual(MeasureUnit.objects.count(), 1)
-		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentification=self.get_credentials()))
+		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentication=self.get_credentials()))
 		self.assertEqual(MeasureUnit.objects.count(), 1)
 
 	def test_delete_detail_unauthorized(self):
