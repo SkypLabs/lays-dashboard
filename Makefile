@@ -23,8 +23,8 @@ createsuperuser:
 	docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app $(IMAGE) createsuperuser
 collectstatic:
 	docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app $(IMAGE) collectstatic
-test:
-	docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app $(IMAGE) test unittest/
+unittest:
+	docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app $(IMAGE) test test/
 shell:
 	docker run --rm -it --user $(UID):$(GID) -v $(PWD):/usr/src/app -w /usr/src/app $(IMAGE) shell
 clean:
