@@ -1,6 +1,27 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Measure, MeasureType, Device
+import pika
+from .models import Measure, MeasureType, Device, Sequence
+
+class AmqpClient():
+	def __init__(self):
+		self.connection = pika.BlockingConnection(pika.ConnectionParameters(
+			'amqpserver'
+		))
+		self.channel = self.connection.channel()
+		self.channel.queue_declare(queue='task', durable=True)
+
+	def send(self, body):
+		self.channel.basic_publish(
+			exchange='',
+			routing_key='task',
+			body=body,
+			properties=pika.BasicProperties(
+				delivery_mode=2
+			),
+		)
+
+		self.connection.close()
 
 @login_required
 def index(request):
@@ -81,3 +102,29 @@ def rawdata_export_csv(request):
 
 	response.write(t.render(c))
 	return response
+
+@login_required
+def send_sequence(request):
+	existing_sequencies = Sequence.objects.exists()
+	context = dict()
+
+	if existing_sequencies:
+		if request.GET.get('sequence_id'):
+			try:
+				sequence_id = request.GET['sequence_id']
+				sequence = Sequence.objects.get(id=sequence_id)
+				AmqpClient().send(sequence.payload)
+				context['message_type'] = 'success'
+				context['message_body'] = 'Sequence sent'
+			except Sequence.DoesNotExist:
+				context['message_type'] = 'error'
+				context['message_body'] = 'The sequence does not exist'
+
+		sequences = Sequence.objects.order_by('name')
+
+		context['existing_sequencies'] = existing_sequencies
+		context['sequencies'] = sequences
+	else:
+		context['existing_sequencies'] = existing_sequencies
+
+	return render(request, 'dashboard/send_sequence.html', context)
