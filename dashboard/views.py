@@ -10,6 +10,7 @@ class AmqpClient():
 		))
 		self.channel = self.connection.channel()
 		self.channel.queue_declare(queue='task', durable=True)
+		self.channel.basic_qos(prefetch_count=1)
 
 	def send(self, body):
 		self.channel.basic_publish(
