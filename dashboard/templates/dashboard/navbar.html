@@ -28,11 +28,11 @@
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				{% url 'dashboard:index' as index_url %}
-				<li {% if request.get_full_path == index_url %}class="active"{% endif %}><a href="{% url 'dashboard:index' %}">Home</a></li>
+				<li {% if request.path == index_url %}class="active"{% endif %}><a href="{% url 'dashboard:index' %}">Home</a></li>
 				{% url 'dashboard:rawdata' as rawdata_url %}
-				<li {% if request.get_full_path == rawdata_url %}class="active"{% endif %}><a href="{% url 'dashboard:rawdata' %}">Raw Data</a></li>
+				<li {% if request.path == rawdata_url %}class="active"{% endif %}><a href="{% url 'dashboard:rawdata' %}">Raw Data</a></li>
 				{% url 'dashboard:send_sequence' as send_sequence_url %}
-				<li {% if request.get_full_path == send_sequence_url %}class="active"{% endif %}><a href="{% url 'dashboard:send_sequence' %}">Send Sequence</a></li>
+				<li {% if request.path == send_sequence_url %}class="active"{% endif %}><a href="{% url 'dashboard:send_sequence' %}">Send Sequence</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
