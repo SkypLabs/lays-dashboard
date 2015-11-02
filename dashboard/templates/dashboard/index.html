@@ -88,7 +88,7 @@
 											var x = new Date(val["time"]).getTime(),
 												y = val["value"];
 
-												chart.get(val["device"]["name"]).addPoint([x, y], false, true);
+												chart.get(val["resource"]["device"]["uuid"]).addPoint([x, y], false, true);
 										});
 
 										chart.redraw();
