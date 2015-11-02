@@ -1,2 +1,2 @@
-{% for measure in measures %}"{{ measure.unit.type.name|addslashes }}","{{ measure.unit.name|addslashes }}","{{ measure.device.name|addslashes }}","{{ measure.time|addslashes }}","{{ measure.value|addslashes }}"
+{% for measure in measures %}"{{ measure.resource.device.name|addslashes }}","{{ measure.resource.name|addslashes }}","{{ measure.resource.address|addslashes }}","{{ measure.unit.type.name|addslashes }}","{{ measure.unit.name|addslashes }}","{{ measure.time|addslashes }}","{{ measure.value|addslashes }}"
 {% endfor %}

@@ -2,20 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from tastypie.utils.timezone import now
 from tastypie.models import create_api_key
+import uuid
 
 models.signals.post_save.connect(create_api_key, sender=User)
-
-class CommunicationType(models.Model):
-	name = models.CharField(max_length=20, unique=True)
-
-	def __str__(self):
-		return self.name
-
-class BusType(models.Model):
-	name = models.OneToOneField(CommunicationType)
-
-	def __str__(self):
-		return self.name.name
 
 class MeasureType(models.Model):
 	name = models.CharField(max_length=20, unique=True)
@@ -28,50 +17,75 @@ class MeasureUnit(models.Model):
 	type = models.ForeignKey(MeasureType)
 
 	def __str__(self):
-		return self.name + " ({0})".format(self.type.name)
-
-class Bus(models.Model):
-	name = models.CharField(max_length=20, unique=True)
-	type = models.ForeignKey(BusType)
-
-	def __str__(self):
-		return self.name
-
-	class Meta:
-		verbose_name_plural = "Buses"
+		return "{0} ({1})".format(self.name, self.type.name)
 
 class Device(models.Model):
-	SENSOR = 'S'
-	ACTUATOR = 'A'
-	TYPE_CHOICES = (
-		(SENSOR, 'Sensor'),
-		(ACTUATOR, 'Actuator'),
-	)
-
-	name = models.CharField(max_length=20, unique=True)
-	type = models.CharField(max_length=2, choices=TYPE_CHOICES)
-	communication_type = models.ManyToManyField(CommunicationType)
-	bus = models.ForeignKey(Bus, null=True, blank=True)
+	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+	name = models.CharField(max_length=20, null=True, blank=True, unique=True)
 	place = models.CharField(max_length=50, null=True, blank=True)
 	description = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
-		return self.name
+		if self.name:
+			return self.name
+		else:
+			return str(self.uuid)
+
+class Resource(models.Model):
+	READ_ONLY = 'ro'
+	WRITE_ONLY = 'wo'
+	READ_WRITE = 'rw'
+	MODE_CHOICES = (
+		(READ_ONLY, 'Read Only'),
+		(WRITE_ONLY, 'Write Only'),
+		(READ_WRITE, 'Read Write'),
+	)
+
+	MEASURE = 'ms'
+	COMMAND = 'cd'
+	CONFIGURATION = 'cf'
+	type_dict = {
+		MEASURE : 'Measure',
+		COMMAND : 'Command',
+		CONFIGURATION : 'Configuration',
+	}
+	TYPE_CHOICES = (
+		(MEASURE, type_dict[MEASURE]),
+		(COMMAND, type_dict[COMMAND]),
+		(CONFIGURATION, type_dict[CONFIGURATION]),
+	)
+
+	BOOLEAN = 'bl'
+	PERCENTAGE = 'pc'
+	VALUE = 'vl'
+	DIMENSION_CHOICES = (
+		(BOOLEAN, 'Boolean'),
+		(PERCENTAGE, 'Percentage'),
+		(VALUE, 'Value'),
+	)
+
+	address = models.PositiveSmallIntegerField(unique=True)
+	name = models.CharField(max_length=20, null=True, blank=True)
+	device = models.ForeignKey(Device)
+	mode = models.CharField(max_length=2, choices=MODE_CHOICES)
+	type = models.CharField(max_length=2, choices=TYPE_CHOICES)
+	dimension = models.CharField(max_length=2, choices=DIMENSION_CHOICES)
+	unit = models.ForeignKey(MeasureUnit, null=True, blank=True)
+	description = models.CharField(max_length=200, null=True, blank=True)
+
+	def __str__(self):
+		if self.name and self.device.name:
+			return "{0} @{1}".format(self.name, self.device.name)
+		elif self.device.name:
+			return "Address {0} ({1}) @{2}".format(self.address, self.type_dict[self.type], self.device.name)
+		else:
+			return "Address {0} ({1}) @{2}".format(self.address, self.type_dict[self.type], self.device.uuid)
 
 class Measure(models.Model):
 	unit = models.ForeignKey(MeasureUnit)
-	device = models.ForeignKey(Device)
+	resource = models.ForeignKey(Resource)
 	time = models.DateTimeField(default=now)
 	value = models.FloatField()
 
 	def __str__(self):
-		return str(self.value)
-
-class Sequence(models.Model):
-	name = models.CharField(max_length=20, unique=True)
-	device = models.ManyToManyField(Device, blank=True)
-	description = models.CharField(max_length=200, null=True, blank=True)
-	payload = models.CharField(max_length=100)
-
-	def __str__(self):
-		return self.name
+		return "{0} {1}".format(str(self.value), self.unit.name)

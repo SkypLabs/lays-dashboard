@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User, Permission
 from tastypie.test import ResourceTestCase
 from tastypie.models import ApiKey
-from unittest import skip
-from dashboard.models import CommunicationType, BusType, Bus, Device
+from dashboard.models import Device
 
 class DeviceResourceTest(ResourceTestCase):
 	def setUp(self):
@@ -12,23 +11,13 @@ class DeviceResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.communication_type = CommunicationType.objects.create(name='I2C')
-		self.bus_type = BusType.objects.create(name=self.communication_type)
-		self.bus = Bus.objects.create(name='i2c01', type=self.bus_type)
-
-		self.entry = Device.objects.create(name='sentemp01', type='S', bus=self.bus, place='In the ground', description='Temperature sensor')
-		self.entry.communication_type.add(self.communication_type)
+		self.entry = Device.objects.create(name='stm32', place='Inside', description='STM32F4')
 		self.list_url = '/api/v1/device/'
 		self.detail_url = '/api/v1/device/{0}/'.format(self.entry.pk)
 		self.post_data = {
-			'name': 'sentemp02',
-			'type': 'S',
-			'communication_type': [
-				'/api/v1/communication_type/{0}/'.format(self.communication_type.pk),
-			],
-			'bus': '/api/v1/bus/{0}/'.format(self.bus.pk),
-			'place': 'Outside',
-			'description': 'Another temperature sensor',
+			'name': 'bbb',
+			'place': 'Inside',
+			'description': 'BeagleBone Black',
 		}
 
 	def get_credentials(self):
@@ -42,7 +31,7 @@ class DeviceResourceTest(ResourceTestCase):
 
 		self.assertValidJSONResponse(resp)
 		self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-		self.assertEqual(self.deserialize(resp)['objects'][0]['name'], 'sentemp01')
+		self.assertEqual(self.deserialize(resp)['objects'][0]['name'], 'stm32')
 
 	def test_get_detail_unauthorized(self):
 		self.assertHttpUnauthorized(self.api_client.get(self.detail_url, format='json'))
@@ -51,12 +40,9 @@ class DeviceResourceTest(ResourceTestCase):
 		resp = self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials())
 
 		self.assertValidJSONResponse(resp)
-		self.assertEqual(self.deserialize(resp)['name'], 'sentemp01')
-		self.assertEqual(self.deserialize(resp)['type'], 'S')
-		self.assertEqual(self.deserialize(resp)['communication_type'][0]['name'], 'I2C')
-		self.assertEqual(self.deserialize(resp)['bus']['name'], 'i2c01')
-		self.assertEqual(self.deserialize(resp)['place'], 'In the ground')
-		self.assertEqual(self.deserialize(resp)['description'], 'Temperature sensor')
+		self.assertEqual(self.deserialize(resp)['name'], 'stm32')
+		self.assertEqual(self.deserialize(resp)['place'], 'Inside')
+		self.assertEqual(self.deserialize(resp)['description'], 'STM32F4')
 
 	def test_post_list_unauthorized(self):
 		self.assertHttpUnauthorized(self.api_client.post(self.list_url, format='json', data=self.post_data))
@@ -72,13 +58,12 @@ class DeviceResourceTest(ResourceTestCase):
 		self.assertHttpUnauthorized(self.api_client.put(self.detail_url, format='json', data={}))
 		self.assertHttpUnauthorized(self.api_client.put(self.detail_url, format='json', data={}, authentication=self.get_credentials()))
 
-	@skip("Test bugged")
 	def test_put_detail_json(self):
 		self.user.user_permissions.add(Permission.objects.get(codename='change_device'))
 		original_data = self.deserialize(self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials()))
 		new_data = original_data.copy()
-		new_data['name'] = 'sentemp03'
-		new_data['place'] = 'Indoor'
+		new_data['name'] = 'stm32f4'
+		new_data['place'] = 'Outside (wireless)'
 
 		self.assertEqual(Device.objects.count(), 1)
 		self.assertHttpAccepted(self.api_client.put(self.detail_url, format='json', data=new_data, authentication=self.get_credentials()))

@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Measure, MeasureType, Device, Sequence
-from .amqp_client import AmqpClient
+from .models import MeasureType, Device, Measure
 
 @login_required
 def index(request):
@@ -14,7 +13,7 @@ def index(request):
 			settings.USE_L10N = False
 
 			types = MeasureType.objects.values_list('name', flat=True).distinct()
-			devices = Device.objects.values_list('name', flat=True).distinct()
+			devices = Device.objects.values_list('uuid', flat=True).distinct()
 			data = dict()
 
 			for type in types:
@@ -23,7 +22,7 @@ def index(request):
 				data[type]["total"] = Measure.objects.filter(unit__type__name=type).count()
 
 				for device in devices:
-					data[type]["devices"][device] = list(reversed(Measure.objects.filter(unit__type__name=type).filter(device__name=device).order_by('-time')[:10]))
+					data[type]["devices"][device] = list(reversed(Measure.objects.filter(unit__type__name=type).filter(resource__device__uuid=device).order_by('-time')[:10]))
 
 			context = {
 				'existing_devices' : existing_devices,
@@ -47,7 +46,7 @@ def rawdata(request):
 	existing_devices = Device.objects.exists()
 
 	if existing_devices:
-		measure = Measure.objects.order_by('time').order_by('device').reverse()
+		measure = Measure.objects.order_by('time').order_by('resource__device').reverse()
 
 		context = {
 			'existing_devices' : existing_devices,
@@ -82,29 +81,3 @@ def rawdata_export_csv(request):
 
 	response.write(t.render(c))
 	return response
-
-@login_required
-def send_sequence(request):
-	existing_sequencies = Sequence.objects.exists()
-	context = dict()
-
-	if existing_sequencies:
-		if request.GET.get('sequence_id'):
-			try:
-				sequence_id = request.GET['sequence_id']
-				sequence = Sequence.objects.get(id=sequence_id)
-				AmqpClient().send(sequence.payload)
-				context['message_type'] = 'success'
-				context['message_body'] = 'Sequence sent'
-			except Sequence.DoesNotExist:
-				context['message_type'] = 'error'
-				context['message_body'] = 'The sequence does not exist'
-
-		sequences = Sequence.objects.order_by('name')
-
-		context['existing_sequencies'] = existing_sequencies
-		context['sequencies'] = sequences
-	else:
-		context['existing_sequencies'] = existing_sequencies
-
-	return render(request, 'dashboard/send_sequence.html', context)

@@ -2,43 +2,10 @@ from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import SessionAuthentication, ApiKeyAuthentication, MultiAuthentication
 from tastypie.authorization import DjangoAuthorization
-from dashboard.models import CommunicationType, BusType, MeasureType, MeasureUnit, Bus, Device, Measure, Sequence
 from tastypie.serializers import Serializer
-
-class CommunicationTypeResource(ModelResource):
-	class Meta:
-		queryset = CommunicationType.objects.all()
-		resource_name = 'communication_type'
-		excludes = ['id']
-		ordering = ['name']
-		allowed_methods = ['post', 'get', 'put', 'delete']
-		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
-		authorization = DjangoAuthorization()
-		always_return_date = True
-		include_resource_uri = False
-		filtering = {
-			'name' : ALL,
-		}
-
-class BusTypeResource(ModelResource):
-	name = fields.ToOneField(CommunicationTypeResource, 'name', full=True)
-
-	class Meta:
-		queryset = BusType.objects.all()
-		resource_name = 'bus_type'
-		excludes = ['id']
-		ordering = ['name']
-		allowed_methods = ['post', 'get', 'put', 'delete']
-		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
-		authorization = DjangoAuthorization()
-		always_return_date = True
-		include_resource_uri = False
-		filtering = {
-			'name' : ALL,
-		}
+from dashboard.models import MeasureType, MeasureUnit, Device, Resource, Measure
 
 class MeasureTypeResource(ModelResource):
-
 	class Meta:
 		queryset = MeasureType.objects.all()
 		resource_name = 'measure_type'
@@ -71,28 +38,7 @@ class MeasureUnitResource(ModelResource):
 			'type' : ALL_WITH_RELATIONS,
 		}
 
-class BusResource(ModelResource):
-	type = fields.ToOneField(BusTypeResource, 'type', full=True)
-
-	class Meta:
-		queryset = Bus.objects.all()
-		resource_name = 'bus'
-		excludes = ['id']
-		ordering = ['name']
-		allowed_methods = ['post', 'get', 'put', 'delete']
-		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
-		authorization = DjangoAuthorization()
-		always_return_date = True
-		include_resource_uri = False
-		filtering = {
-			'name' : ALL,
-			'type' : ALL_WITH_RELATIONS,
-		}
-
 class DeviceResource(ModelResource):
-	bus = fields.ToOneField(BusResource, 'bus', full=True)
-	communication_type = fields.ToManyField('dashboard.api.resources.CommunicationTypeResource', 'communication_type', full=True)
-
 	class Meta:
 		queryset = Device.objects.all()
 		resource_name = 'device'
@@ -104,16 +50,38 @@ class DeviceResource(ModelResource):
 		always_return_date = True
 		include_resource_uri = False
 		filtering = {
+			'uuid' : ALL,
 			'name' : ALL,
-			'type' : ALL,
-			'communication_type' : ALL_WITH_RELATIONS,
-			'bus' : ALL_WITH_RELATIONS,
 			'place' : ALL,
+		}
+
+class ResourceResource(ModelResource):
+	device = fields.ToOneField(DeviceResource, 'device', full=True)
+	unit = fields.ToOneField(MeasureUnitResource, 'unit', full=True)
+
+	class Meta:
+		queryset = Resource.objects.all()
+		resource_name = 'resource'
+		excludes = ['id']
+		ordering = ['name']
+		allowed_methods = ['post', 'get', 'put', 'delete']
+		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
+		authorization = DjangoAuthorization()
+		always_return_date = True
+		include_resource_uri = False
+		filtering = {
+			'address' : ALL,
+			'name' : ALL,
+			'device' : ALL_WITH_RELATIONS,
+			'mode' : ALL,
+			'type' : ALL,
+			'dimension' : ALL,
+			'unit' : ALL_WITH_RELATIONS,
 		}
 
 class MeasureResource(ModelResource):
 	unit = fields.ToOneField(MeasureUnitResource, 'unit', full=True)
-	device = fields.ToOneField(DeviceResource, 'device', full=True)
+	resource = fields.ToOneField(ResourceResource, 'resource', full=True)
 
 	class Meta:
 		queryset = Measure.objects.all()
@@ -126,24 +94,6 @@ class MeasureResource(ModelResource):
 		always_return_date = True
 		include_resource_uri = False
 		filtering = {
-			'device' : ALL_WITH_RELATIONS,
 			'unit' : ALL_WITH_RELATIONS,
-		}
-
-class SequenceResource(ModelResource):
-	device = fields.ToManyField('dashboard.api.resources.DeviceResource', 'device', full=True)
-
-	class Meta:
-		queryset = Sequence.objects.all()
-		resource_name = 'sequence'
-		excludes = ['id']
-		ordering = ['name']
-		allowed_methods = ['post', 'get', 'put', 'delete']
-		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
-		authorization = DjangoAuthorization()
-		always_return_date = True
-		include_resource_uri = False
-		filtering = {
-			'name' : ALL,
-			'device' : ALL_WITH_RELATIONS,
+			'resource' : ALL_WITH_RELATIONS,
 		}

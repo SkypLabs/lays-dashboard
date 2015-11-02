@@ -2,8 +2,7 @@ from datetime import datetime
 from django.contrib.auth.models import User, Permission
 from tastypie.test import ResourceTestCase
 from tastypie.models import ApiKey
-from unittest import skip
-from dashboard.models import CommunicationType, BusType, MeasureType, MeasureUnit, Bus, Device, Measure
+from dashboard.models import MeasureType, MeasureUnit, Device, Resource, Measure
 
 class MeasureResourceTest(ResourceTestCase):
 	def setUp(self):
@@ -13,20 +12,17 @@ class MeasureResourceTest(ResourceTestCase):
 		self.password = 'pass'
 		self.user = User.objects.create_user(self.username, 'user@example.com', self.password)
 
-		self.communication_type = CommunicationType.objects.create(name='I2C')
-		self.bus_type = BusType.objects.create(name=self.communication_type)
-		self.bus = Bus.objects.create(name='i2c01', type=self.bus_type)
-		self.device = Device.objects.create(name='sentemp01', type='S', bus=self.bus, place='In the ground', description='Temperature sensor')
-		self.device.communication_type.add(self.communication_type)
+		self.device = Device.objects.create(name='stm32', place='Inside', description='STM32F4')
 		self.measure_type = MeasureType.objects.create(name='Temperature')
 		self.unit = MeasureUnit.objects.create(name='°C', type=self.measure_type)
+		self.resource = Resource.objects.create(address=1, name="sentemp01", device=self.device, mode='ro', type='ms', dimension='vl', unit=self.unit)
 
-		self.entry = Measure.objects.create(unit=self.unit, device=self.device, time=datetime(2012, 3, 1, 13, 6, 12), value=23.3)
+		self.entry = Measure.objects.create(unit=self.unit, resource=self.resource, time=datetime(2012, 3, 1, 13, 6, 12), value=23.3)
 		self.list_url = '/api/v1/measure/'
 		self.detail_url = '/api/v1/measure/{0}/'.format(self.entry.pk)
 		self.post_data = {
 			'unit': '/api/v1/measure_unit/{0}/'.format(self.unit.pk),
-			'device': '/api/v1/device/{0}/'.format(self.device.pk),
+			'resource': '/api/v1/resource/{0}/'.format(self.resource.pk),
 			'time': '2012-05-01T19:13:42',
 			'value': '25.1',
 		}
@@ -52,7 +48,7 @@ class MeasureResourceTest(ResourceTestCase):
 
 		self.assertValidJSONResponse(resp)
 		self.assertEqual(self.deserialize(resp)['unit']['name'], '°C')
-		self.assertEqual(self.deserialize(resp)['device']['name'], 'sentemp01')
+		self.assertEqual(self.deserialize(resp)['resource']['name'], 'sentemp01')
 		self.assertEqual(self.deserialize(resp)['time'], '2012-03-01T13:06:12')
 		self.assertEqual(self.deserialize(resp)['value'], 23.3)
 
@@ -70,9 +66,12 @@ class MeasureResourceTest(ResourceTestCase):
 		self.assertHttpUnauthorized(self.api_client.put(self.detail_url, format='json', data={}))
 		self.assertHttpUnauthorized(self.api_client.put(self.detail_url, format='json', data={}, authentication=self.get_credentials()))
 
-	@skip("Test bugged")
 	def test_put_detail_json(self):
 		self.user.user_permissions.add(Permission.objects.get(codename='change_measure'))
+		self.user.user_permissions.add(Permission.objects.get(codename='change_measuretype'))
+		self.user.user_permissions.add(Permission.objects.get(codename='change_measureunit'))
+		self.user.user_permissions.add(Permission.objects.get(codename='change_device'))
+		self.user.user_permissions.add(Permission.objects.get(codename='change_resource'))
 		original_data = self.deserialize(self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials()))
 		new_data = original_data.copy()
 		new_data['time'] = '2012-06-01T19:15:27'
