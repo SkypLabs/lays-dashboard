@@ -30,10 +30,7 @@ class Device(models.Model):
 	description = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
-		if self.name:
-			return self.name
-		else:
-			return str(self.uuid)
+		return self.name
 
 class Resource(models.Model):
 	READ_ONLY = 'ro'
@@ -78,12 +75,10 @@ class Resource(models.Model):
 	description = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
-		if self.name and self.device.name:
+		if self.name:
 			return "{0} @{1}".format(self.name, self.device.name)
-		elif self.device.name:
-			return "Address {0} ({1}) @{2}".format(self.address, self.type_dict[self.type], self.device.name)
 		else:
-			return "Address {0} ({1}) @{2}".format(self.address, self.type_dict[self.type], self.device.uuid)
+			return "Address {0} ({1}) @{2}".format(self.address, self.type_dict[self.type], self.device.name)
 
 class Measure(models.Model):
 	unit = models.ForeignKey(MeasureUnit)
