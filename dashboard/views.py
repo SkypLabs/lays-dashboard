@@ -13,7 +13,7 @@ def index(request):
 			settings.USE_L10N = False
 
 			types = MeasureType.objects.values_list('name', flat=True).distinct()
-			devices = Device.objects.values_list('uuid', flat=True).distinct()
+			devices = Device.objects.values_list('name', flat=True).distinct()
 			data = dict()
 
 			for type in types:
@@ -22,7 +22,7 @@ def index(request):
 				data[type]["total"] = Measure.objects.filter(unit__type__name=type).count()
 
 				for device in devices:
-					data[type]["devices"][device] = list(reversed(Measure.objects.filter(unit__type__name=type).filter(resource__device__uuid=device).order_by('-time')[:10]))
+					data[type]["devices"][device] = list(reversed(Measure.objects.filter(unit__type__name=type).filter(resource__device__name=device).order_by('-time')[:10]))
 
 			context = {
 				'existing_devices' : existing_devices,

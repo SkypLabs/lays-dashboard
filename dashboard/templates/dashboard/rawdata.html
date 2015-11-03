@@ -4,11 +4,7 @@
 	<div class="row">
 		<div class="col-lg-10">
 		{% if existing_devices %}
-			{% if measure.resource.name != '' %}
-				{% regroup measure by resource.device.name as device_list %}
-			{% else %}
-				{% regroup measure by resource.device.uuid as device_list %}
-			{% endif %}
+			{% regroup measure by resource.device.name as device_list %}
 			{% for device in device_list %}
 				<div class="panel panel-default">
 					<div class="panel-heading">

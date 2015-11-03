@@ -2,9 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from tastypie.utils.timezone import now
 from tastypie.models import create_api_key
+from haikunator import haikunate
 import uuid
 
 models.signals.post_save.connect(create_api_key, sender=User)
+
+def get_default_device_name():
+	return haikunate(tokenLength=0)
 
 class MeasureType(models.Model):
 	name = models.CharField(max_length=20, unique=True)
@@ -21,7 +25,7 @@ class MeasureUnit(models.Model):
 
 class Device(models.Model):
 	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-	name = models.CharField(max_length=20, null=True, blank=True, unique=True)
+	name = models.CharField(default=get_default_device_name, max_length=20, unique=True)
 	place = models.CharField(max_length=50, null=True, blank=True)
 	description = models.CharField(max_length=200, null=True, blank=True)
 
