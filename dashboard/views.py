@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import MeasureType, Device, Measure
+from .models import MeasureType, Device, Resource, Measure
 
 @login_required
 def index(request):
@@ -12,8 +12,8 @@ def index(request):
 			from django.conf import settings
 			settings.USE_L10N = False
 
-			types = MeasureType.objects.values_list('name', flat=True).distinct()
-			devices = Device.objects.values_list('name', flat=True).distinct()
+			types = MeasureType.objects.values_list('name', flat=True)
+			devices = Device.objects.values_list('name', flat=True)
 			data = dict()
 
 			for type in types:
@@ -81,3 +81,56 @@ def rawdata_export_csv(request):
 
 	response.write(t.render(c))
 	return response
+
+@login_required
+def device_resources(request):
+	existing_devices = Device.objects.exists()
+	existing_resources = Resource.objects.exists()
+
+	if existing_devices:
+		if existing_resources:
+			if request.GET.get('device_name'):
+				try:
+					device_name = request.GET['device_name']
+					current_device = Device.objects.get(name=device_name).name
+				except Device.DoesNotExist:
+					current_device = Device.objects.order_by('name').first().name
+			else:
+				current_device = Device.objects.order_by('name').first().name
+
+			if request.GET.get('tab_name'):
+				current_tab = request.GET['tab_name']
+
+				if current_tab not in ['ms', 'cd', 'cf']:
+					current_tab = 'ms'
+			else:
+				current_tab = 'ms'
+
+			devices = Device.objects.values_list('name', flat=True)
+			resources = Resource.objects.filter(device__name=current_device).filter(type=current_tab)
+			counters = dict()
+
+			for device in devices:
+				counters[device] = Resource.objects.filter(device__name=device).count()
+
+			sorted(counters)
+
+			context = {
+				'existing_devices' : existing_devices,
+				'existing_resources' : existing_resources,
+				'current_device' : current_device,
+				'current_tab' : current_tab,
+				'resources' : resources,
+				'counters' : counters,
+			}
+		else:
+			context = {
+				'existing_devices' : existing_devices,
+				'existing_resources' : existing_resources,
+			}
+	else:
+		context = {
+			'existing_devices' : existing_devices,
+		}
+
+	return render(request, 'dashboard/device_resources.html', context)

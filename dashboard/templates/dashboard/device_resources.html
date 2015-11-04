@@ -1,0 +1,63 @@
+{% extends "dashboard/navbar.html" %}
+
+{% block content %}
+	<div class="row">
+		{% if existing_devices %}
+			<div class="col-lg-10">
+				<div class="panel panel-default">
+					<div class="panel-heading">{{ current_device }}</div>
+					<div class="panel-body">
+						<ul class="nav nav-tabs">
+							<li role="presentation" {% if current_tab == 'ms' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=ms">Measure</a></li>
+							<li role="presentation" {% if current_tab == 'cd' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=cd">Command</a></li>
+							<li role="presentation" {% if current_tab == 'cf' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=cf">Configuration</a></li>
+						</ul>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Address</th>
+									<th>Name</th>
+									<th>Description</th>
+									{% if current_tab == 'ms' %}
+										<th>Unit</th>
+									{% endif %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for resource in resources %}
+									<tr>
+										<td>{{ resource.address }}</td>
+										<td>{{ resource.name }}</td>
+										<td>{{ resource.description }}</td>
+										{% if current_tab == 'ms' %}
+											<td>{{ resource.unit}}</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Devices</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-group">
+							{% for device,counter in counters.items %}
+								<a href="?device_name={{ device }}" class="list-group-item {% if current_device == device %}active{% endif %}">
+									<span class="badge">{{ counter }}</span>
+									{{ device }}
+								</a>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			{% include "dashboard/no_device.html" %}
+		{% endif %}
+	</div>
+{% endblock %}
