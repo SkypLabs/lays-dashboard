@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import MeasureType, Device, Resource, Measure
+from .device_request import DeviceRequest
 
 @login_required
 def index(request):
@@ -134,3 +135,51 @@ def device_resources(request):
 		}
 
 	return render(request, 'dashboard/device_resources.html', context)
+
+@login_required
+def device_request(request):
+	from django.http import JsonResponse
+
+	data = {}
+
+	if request.GET.get('uuid') and request.GET.get('address') and request.GET.get('operation'):
+		device_uuid = request.GET['uuid']
+		resource_address = request.GET['address']
+		operation = request.GET['operation']
+
+		if operation == 'read' or operation == 'write':
+			if Resource.objects.filter(device__uuid=device_uuid).filter(address=resource_address).count() != 0:
+				from django.conf import settings
+				from pika.exceptions import ConnectionClosed
+
+				try:
+					if operation == 'read':
+						DeviceRequest(settings.AMQP_HOST, device_uuid).read(resource_address)
+
+						data['result'] = 'success'
+						data['message'] = 'read request sent'
+					else:
+						if request.GET.get('value'):
+							resource_value = request.GET['value']
+
+							DeviceRequest(settings.AMQP_HOST, device_uuid).write(resource_address, resource_value)
+
+							data['result'] = 'success'
+							data['message'] = 'write request sent'
+						else:
+							data['result'] = 'error'
+							data['message'] = 'write operation requested without value'
+				except ConnectionClosed:
+					data['result'] = 'error'
+					data['message'] = 'Unable to connect to the AMQP server'
+			else:
+				data['result'] = 'error'
+				data['message'] = 'unknown device or resource'
+		else:
+			data['result'] = 'error'
+			data['message'] = 'unknown operation'
+	else:
+		data['result'] = 'error'
+		data['message'] = 'bad request'
+
+	return JsonResponse(data)

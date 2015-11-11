@@ -154,3 +154,7 @@ PIPELINE_JS = {
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
 TASTYPIE_DATETIME_FORMATTING = 'iso-8601'
+
+# AMQP server settings
+
+AMQP_HOST = os.getenv('AMQPSERVER_PORT_5672_TCP_ADDR', 'localhost')
