@@ -1,4 +1,13 @@
 {% extends "dashboard/navbar.html" %}
+{% load pipeline %}
+
+{% block head_css %}
+	{% stylesheet 'device_resources' %}
+{% endblock %}
+
+{% block head_js %}
+	{% javascript 'device_resources' %}
+{% endblock %}
 
 {% block content %}
 	<div class="row">
@@ -21,6 +30,8 @@
 									{% if current_tab == 'ms' %}
 										<th>Unit</th>
 									{% endif %}
+									<th>Dimension</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -31,6 +42,24 @@
 										<td>{{ resource.description }}</td>
 										{% if current_tab == 'ms' %}
 											<td>{{ resource.unit}}</td>
+										{% endif %}
+										{% if resource.dimension == 'bl' %}
+											{% if resource.mode == 'wo' %}
+												<td>Boolean</td>
+												<td><button id="at-resource{{ resource.address }}-true" class="btn btn-default" type="button" style="margin-right: 1em;">True</button><button id="at-resource{{ resource.address }}-false" class="btn btn-default" type="button">False</button></td>
+											{% else %}
+												<td><input id="ds-resource{{ resource.address }}" type="checkbox" name="bl-switch" data-size="mini" data-indeterminate="true" {% if resource.mode == 'ro' %}readonly{% endif %}></td>
+												<td><button id="at-resource{{ resource.address }}" class="btn btn-default" type="button">Read</button></td>
+											{% endif %}
+										{% elif resource.dimension == 'pc' %}
+											<td><input id="ds-resource{{ resource.address }}" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="" {% if resource.mode == 'ro' %}data-slider-enabled="false"{% endif %}/></td>
+											<td><button id="at-resource{{ resource.address }}" class="btn btn-default" type="button">{% if resource.mode == 'wo' %}Write{% else %}Read{% endif %}</button></td>
+										{% elif resource.dimension == 'vl' %}
+											<td><input id="ds-resource{{ resource.address }}" class="form-control" type="text" {% if resource.mode == 'ro' %}readonly{% endif %}></td>
+											<td><button id="at-resource{{ resource.address }}" class="btn btn-default" type="button">{% if resource.mode == 'wo' %}Write{% else %}Read{% endif %}</button></td>
+										{% elif resource.dimension == 'at' %}
+											<td>Command to send</td>
+											<td><button id="at-resource{{ resource.address }}" class="btn btn-default" type="button">Send</button></td>
 										{% endif %}
 									</tr>
 								{% endfor %}
@@ -60,4 +89,154 @@
 			{% include "dashboard/no_device.html" %}
 		{% endif %}
 	</div>
+{% endblock %}
+
+{% block foot_js %}
+	<script type="text/javascript">
+		{% for resource in resources %}
+			{% if resource.dimension == 'bl' %}
+				{% if resource.mode == 'wo' %}
+					$("#at-resource{{ resource.address }}-true").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "write",
+									value: "true"
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+					$("#at-resource{{ resource.address }}-false").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "write",
+									value: "false"
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% else %}
+					$("#ds-resource{{ resource.address }}").bootstrapSwitch();
+
+					$("#at-resource{{ resource.address }}").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "read"
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% endif %}
+			{% elif resource.dimension == 'pc' %}
+				$("#ds-resource{{ resource.address }}").slider();
+
+				{% if resource.mode == 'wo' %}
+					$("#at-resource{{ resource.address }}").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "write",
+									value: $("#ds-resource{{ resource.address }}").val()
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% else %}
+					$("#at-resource{{ resource.address }}").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "read"
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% endif %}
+			{% elif resource.dimension == 'vl' %}
+				{% if resource.mode == 'wo' %}
+					$("#at-resource{{ resource.address }}").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "write",
+									value: $("#ds-resource{{ resource.address }}").val()
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% else %}
+					$("#at-resource{{ resource.address }}").click(
+						function() {
+							$.post(
+								"/device_request/",
+								{
+									csrfmiddlewaretoken: "{{ csrf_token }}",
+									uuid: "{{ resource.device.uuid }}",
+									address: "{{ resource.address }}",
+									action: "read"
+								},
+								function(data, status) {
+								}
+							)
+						}
+					);
+				{% endif %}
+			{% elif resource.dimension == 'at' %}
+				$("#at-resource{{ resource.address }}").click(
+					function() {
+						$.post(
+							"/device_request/",
+							{
+								csrfmiddlewaretoken: "{{ csrf_token }}",
+								uuid: "{{ resource.device.uuid }}",
+								address: "{{ resource.address }}",
+								action: "write",
+								value: "none"
+							},
+							function(data, status) {
+							}
+						)
+					}
+				);
+			{% endif %}
+		{% endfor %}
+	</script>
 {% endblock %}

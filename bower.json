@@ -4,6 +4,8 @@
 	"dependencies": {
 		"jquery": "~2.1.4",
 		"bootstrap": "~3.3.5",
+		"bootstrap-switch": "~3.3.2",
+		"seiyria-bootstrap-slider": "~5.2.6",
 		"highcharts-release": "~3.0.2"
 	},
 	"private": true

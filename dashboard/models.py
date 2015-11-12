@@ -59,10 +59,12 @@ class Resource(models.Model):
 	BOOLEAN = 'bl'
 	PERCENTAGE = 'pc'
 	VALUE = 'vl'
+	ACTION = 'at'
 	DIMENSION_CHOICES = (
 		(BOOLEAN, 'Boolean'),
 		(PERCENTAGE, 'Percentage'),
 		(VALUE, 'Value'),
+		(ACTION, 'Action'),
 	)
 
 	address = models.PositiveSmallIntegerField(unique=True)

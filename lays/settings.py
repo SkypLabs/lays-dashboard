@@ -126,10 +126,18 @@ STATICFILES_DIRS = (
 PIPELINE_CSS = {
 	'default': {
 		'source_filenames': (
-			'bower_components/bootstrap/dist/css/bootstrap.css',
+			'bootstrap/dist/css/bootstrap.css',
 		),
 		'output_filename': 'css/libs.min.css',
-	}
+	},
+	'device_resources': {
+		'source_filenames': (
+			'bootstrap/dist/css/bootstrap.css',
+			'bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css',
+			'seiyria-bootstrap-slider/css/bootstrap-slider.css',
+		),
+		'output_filename': 'css/libs.min.css',
+	},
 }
 
 PIPELINE_JS = {
@@ -147,7 +155,16 @@ PIPELINE_JS = {
 			'highcharts-release/highcharts.js',
 		),
 		'output_filename': 'js/charts.min.js',
-	}
+	},
+	'device_resources': {
+		'source_filenames': (
+			'jquery/dist/jquery.js',
+			'bootstrap/dist/js/bootstrap.js',
+			'bootstrap-switch/dist/js/bootstrap-switch.js',
+			'seiyria-bootstrap-slider/js/bootstrap-slider.js',
+		),
+		'output_filename': 'js/default.min.js',
+	},
 }
 
 # Tastypie settings
