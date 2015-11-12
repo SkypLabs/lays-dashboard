@@ -142,10 +142,10 @@ def device_request(request):
 
 	data = {}
 
-	if request.GET.get('uuid') and request.GET.get('address') and request.GET.get('action'):
-		device_uuid = request.GET['uuid']
-		resource_address = request.GET['address']
-		action = request.GET['action']
+	if request.POST.get('uuid') and request.POST.get('address') and request.POST.get('action'):
+		device_uuid = request.POST['uuid']
+		resource_address = request.POST['address']
+		action = request.POST['action']
 
 		if action == 'read' or action == 'write':
 			if Resource.objects.filter(device__uuid=device_uuid).filter(address=resource_address).count() != 0:
@@ -159,8 +159,8 @@ def device_request(request):
 						data['result'] = 'success'
 						data['message'] = 'read request sent'
 					else:
-						if request.GET.get('value'):
-							resource_value = request.GET['value']
+						if request.POST.get('value'):
+							resource_value = request.POST['value']
 
 							DeviceRequest(settings.AMQP_HOST, device_uuid).write(resource_address, resource_value)
 
