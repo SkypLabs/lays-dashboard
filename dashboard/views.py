@@ -142,18 +142,18 @@ def device_request(request):
 
 	data = {}
 
-	if request.GET.get('uuid') and request.GET.get('address') and request.GET.get('operation'):
+	if request.GET.get('uuid') and request.GET.get('address') and request.GET.get('action'):
 		device_uuid = request.GET['uuid']
 		resource_address = request.GET['address']
-		operation = request.GET['operation']
+		action = request.GET['action']
 
-		if operation == 'read' or operation == 'write':
+		if action == 'read' or action == 'write':
 			if Resource.objects.filter(device__uuid=device_uuid).filter(address=resource_address).count() != 0:
 				from django.conf import settings
 				from pika.exceptions import ConnectionClosed
 
 				try:
-					if operation == 'read':
+					if action == 'read':
 						DeviceRequest(settings.AMQP_HOST, device_uuid).read(resource_address)
 
 						data['result'] = 'success'
@@ -168,7 +168,7 @@ def device_request(request):
 							data['message'] = 'write request sent'
 						else:
 							data['result'] = 'error'
-							data['message'] = 'write operation requested without value'
+							data['message'] = 'write action requested without value'
 				except ConnectionClosed:
 					data['result'] = 'error'
 					data['message'] = 'Unable to connect to the AMQP server'
@@ -177,7 +177,7 @@ def device_request(request):
 				data['message'] = 'unknown device or resource'
 		else:
 			data['result'] = 'error'
-			data['message'] = 'unknown operation'
+			data['message'] = 'unknown action'
 	else:
 		data['result'] = 'error'
 		data['message'] = 'bad request'
