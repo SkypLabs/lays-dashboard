@@ -17,9 +17,9 @@
 					<div class="panel-heading">{{ current_device }}</div>
 					<div class="panel-body">
 						<ul class="nav nav-tabs">
-							<li role="presentation" {% if current_tab == 'ms' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=ms">Measure</a></li>
-							<li role="presentation" {% if current_tab == 'cd' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=cd">Command</a></li>
-							<li role="presentation" {% if current_tab == 'cf' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&tab_name=cf">Configuration</a></li>
+							<li role="presentation" {% if current_tab == 'ms' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&amp;tab_name=ms">Measure</a></li>
+							<li role="presentation" {% if current_tab == 'cd' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&amp;tab_name=cd">Command</a></li>
+							<li role="presentation" {% if current_tab == 'cf' %}class="active"{% endif %}><a href="?device_name={{ current_device }}&amp;tab_name=cf">Configuration</a></li>
 						</ul>
 						<table class="table">
 							<thead>
