@@ -33,6 +33,11 @@ class Device(models.Model):
 		return self.name
 
 class Resource(models.Model):
+	class Meta:
+		unique_together = (
+			("device", "address"),
+		)
+
 	READ_ONLY = 'ro'
 	WRITE_ONLY = 'wo'
 	READ_WRITE = 'rw'
@@ -67,7 +72,7 @@ class Resource(models.Model):
 		(ACTION, 'Action'),
 	)
 
-	address = models.PositiveSmallIntegerField(unique=True)
+	address = models.PositiveSmallIntegerField()
 	name = models.CharField(max_length=20, null=True, blank=True)
 	device = models.ForeignKey(Device)
 	mode = models.CharField(max_length=2, choices=MODE_CHOICES)
