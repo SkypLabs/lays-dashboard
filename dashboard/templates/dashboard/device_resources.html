@@ -113,6 +113,7 @@
 {% block foot_js %}
 	<script type="text/javascript">
 		function send_request(uuid, address, action, value) {
+			value = value || "";
 			$.post(
 				"/device_request/",
 				{
@@ -134,7 +135,7 @@
 
 					$("#at-resource{{ resource.address }}").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 				{% elif resource.mode == 'wo' %}
@@ -153,7 +154,7 @@
 
 					$("#at-resource{{ resource.address }}-read").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 					$("#at-resource{{ resource.address }}-write").click(
@@ -169,7 +170,7 @@
 				{% if resource.mode == 'ro' %}
 					$("#at-resource{{ resource.address }}").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 				{% elif resource.mode == 'wo' %}
@@ -182,7 +183,7 @@
 				{% else %}
 					$("#at-resource{{ resource.address }}-read").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 					$("#at-resource{{ resource.address }}-write").click(
@@ -196,7 +197,7 @@
 				{% if resource.mode == 'ro' %}
 					$("#at-resource{{ resource.address }}").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 				{% elif resource.mode == 'wo' %}
@@ -209,7 +210,7 @@
 				{% else %}
 					$("#at-resource{{ resource.address }}-read").click(
 						function() {
-							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read", "");
+							send_request("{{ resource.device.uuid }}", "{{ resource.address }}", "read");
 						}
 					);
 					$("#at-resource{{ resource.address }}-write").click(
