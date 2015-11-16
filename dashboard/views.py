@@ -141,6 +141,7 @@ def device_request(request):
 	from django.http import JsonResponse
 
 	data = {}
+	error_code = 0
 
 	if request.POST.get('uuid') and request.POST.get('address') and request.POST.get('action'):
 		device_uuid = request.POST['uuid']
@@ -156,7 +157,7 @@ def device_request(request):
 					if action == 'read':
 						DeviceRequest(settings.AMQP_HOST, device_uuid).read(resource_address)
 
-						data['result'] = 'success'
+						data['status'] = 'success'
 						data['message'] = 'read request sent'
 					else:
 						if request.POST.get('value'):
@@ -164,22 +165,32 @@ def device_request(request):
 
 							DeviceRequest(settings.AMQP_HOST, device_uuid).write(resource_address, resource_value)
 
-							data['result'] = 'success'
+							data['status'] = 'success'
 							data['message'] = 'write request sent'
 						else:
-							data['result'] = 'error'
+							data['status'] = 'error'
 							data['message'] = 'write action requested without value'
+							error_code = 400
 				except ConnectionClosed:
-					data['result'] = 'error'
+					data['status'] = 'error'
 					data['message'] = 'Unable to connect to the AMQP server'
+					error_code = 500
 			else:
-				data['result'] = 'error'
+				data['status'] = 'error'
 				data['message'] = 'unknown device or resource'
+				error_code = 400
 		else:
-			data['result'] = 'error'
+			data['status'] = 'error'
 			data['message'] = 'unknown action'
+			error_code = 400
 	else:
-		data['result'] = 'error'
+		data['status'] = 'error'
 		data['message'] = 'bad request'
+		error_code = 400
 
-	return JsonResponse(data)
+	if error_code != 0:
+		response = JsonResponse(data)
+		response.status_code = error_code
+		return response
+	else:
+		return JsonResponse(data)
