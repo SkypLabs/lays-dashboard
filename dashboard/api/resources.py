@@ -57,7 +57,7 @@ class DeviceResource(ModelResource):
 
 class ResourceResource(ModelResource):
 	device = fields.ToOneField(DeviceResource, 'device', full=True)
-	unit = fields.ToOneField(MeasureUnitResource, 'unit', full=True)
+	unit = fields.ToOneField(MeasureUnitResource, 'unit', full=True, null=True, blank=True)
 
 	class Meta:
 		queryset = Resource.objects.all()
