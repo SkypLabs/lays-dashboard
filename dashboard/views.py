@@ -85,6 +85,8 @@ def rawdata_export_csv(request):
 
 @login_required
 def device_resources(request):
+	from collections import OrderedDict
+
 	existing_devices = Device.objects.exists()
 	existing_resources = Resource.objects.exists()
 
@@ -107,14 +109,12 @@ def device_resources(request):
 			else:
 				current_tab = 'ms'
 
-			devices = Device.objects.values_list('name', flat=True)
+			devices = Device.objects.values_list('name', flat=True).order_by('name')
 			resources = Resource.objects.filter(device__name=current_device).filter(type=current_tab)
-			counters = dict()
+			counters = OrderedDict()
 
 			for device in devices:
 				counters[device] = Resource.objects.filter(device__name=device).count()
-
-			sorted(counters)
 
 			context = {
 				'existing_devices' : existing_devices,
