@@ -9,7 +9,6 @@ class MeasureTypeResource(ModelResource):
 	class Meta:
 		queryset = MeasureType.objects.all()
 		resource_name = 'measure_type'
-		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
@@ -26,7 +25,6 @@ class MeasureUnitResource(ModelResource):
 	class Meta:
 		queryset = MeasureUnit.objects.all()
 		resource_name = 'measure_unit'
-		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
@@ -42,7 +40,6 @@ class DeviceResource(ModelResource):
 	class Meta:
 		queryset = Device.objects.all()
 		resource_name = 'device'
-		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
@@ -62,7 +59,6 @@ class ResourceResource(ModelResource):
 	class Meta:
 		queryset = Resource.objects.all()
 		resource_name = 'resource'
-		excludes = ['id']
 		ordering = ['name']
 		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
@@ -86,7 +82,6 @@ class MeasureResource(ModelResource):
 	class Meta:
 		queryset = Measure.objects.all()
 		resource_name = 'measure'
-		excludes = ['id']
 		ordering = ['time']
 		allowed_methods = ['post', 'get', 'put', 'delete']
 		authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
