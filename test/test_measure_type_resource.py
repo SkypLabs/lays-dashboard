@@ -29,9 +29,7 @@ class MeasureTypeResourceTest(ResourceTestCase):
 
 		self.assertValidJSONResponse(resp)
 		self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-		self.assertEqual(self.deserialize(resp)['objects'][0], {
-			'name': 'Temperature',
-		})
+		self.assertEqual(self.deserialize(resp)['objects'][0]['name'], 'Temperature')
 
 	def test_get_detail_unauthorized(self):
 		self.assertHttpUnauthorized(self.api_client.get(self.detail_url, format='json'))
