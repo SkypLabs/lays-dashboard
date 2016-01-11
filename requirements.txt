@@ -1,5 +1,5 @@
 django==1.8.5
-django-pipeline
-django-tastypie
+django-pipeline==1.5.4
+django-tastypie==0.12.2
 pika==0.10.0
-haikunator
+haikunator==0.2.1
