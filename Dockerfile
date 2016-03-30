@@ -1,6 +1,6 @@
 FROM django:1.8-python3
+MAINTAINER skyper@skyplabs.net
 
-VOLUME ["/usr/src/app"]
 EXPOSE 8000
 
 COPY requirements.txt /tmp/
