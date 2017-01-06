@@ -1,5 +1,5 @@
 FROM django:1.8-python3
-MAINTAINER skyper@skyplabs.net
+MAINTAINER Paul-Emmanuel Raoul <skyper@skyplabs.net>
 
 EXPOSE 8000
 
